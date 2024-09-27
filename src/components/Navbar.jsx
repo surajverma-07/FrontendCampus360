@@ -16,6 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import SchoolIcon from "@mui/icons-material/School";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { userState } from "../context/UserContext";
+import axios from "axios";
 
 const Navbar = () => {
   const { userData, setUserData, isAuthorized, setisAuthorized } = userState();
@@ -24,9 +25,12 @@ const Navbar = () => {
     setOpen(newOpen);
   };
 
-  const handleLogout = () => {
-    setisAuthorized(false); // Set authorization state to false
-    setUserData(null); // Clear user data on logout
+
+  const handleLogout =async () => {
+    const response = await axios.get(
+      "http://localhost:3000/api/v1/campus-connect/user/logout",
+      { withCredentials: true }
+    );
   };
 
   return (
@@ -56,7 +60,6 @@ const Navbar = () => {
                 </Link>
                 <Divider />
 
-                {/* Conditional Rendering for Login/Logout in Drawer */}
                 {!isAuthorized ? (
                   <Link to={"/login"}>
                     <ListItem disablePadding>
@@ -69,7 +72,8 @@ const Navbar = () => {
                     </ListItem>
                   </Link>
                 ) : (
-                  <ListItem disablePadding onClick={handleLogout}>
+                  
+                  <ListItem  disablePadding onClick={handleLogout}>
                     <ListItemButton>
                       <ListItemIcon>
                         <LogoutIcon />
@@ -96,7 +100,6 @@ const Navbar = () => {
           </Drawer>
         </div>
 
-        {/* For larger screens */}
         <div className="md:mr-5 hidden text-xl mr-1 md:flex">
           {!isAuthorized ? (
             <>
