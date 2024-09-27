@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 function MyEvent() {
   const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
     fetchEvents();
@@ -12,10 +13,30 @@ function MyEvent() {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/v1/campus-connect/event/my',{withCredentials:true});
+      const response = await axios.get('http://localhost:3000/api/v1/campus-connect/event/my', { withCredentials: true });
       setEvents(response.data.data.events);
     } catch (error) {
       toast.error('Failed to fetch events!');
+    }
+  };
+
+  const handleUpdate = async (id) => {
+    try {
+      const response = await axios.patch(`http://localhost:3000/api/v1/campus-connect/event/update/${id}`, selectedEvent, { withCredentials: true });
+      toast.success('Event updated successfully!');
+      fetchEvents();
+    } catch (error) {
+      toast.error('Failed to update event!');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/v1/campus-connect/event/delete/${id}`, { withCredentials: true });
+      toast.success('Event deleted successfully!');
+      fetchEvents();
+    } catch (error) {
+      toast.error('Failed to delete event!');
     }
   };
 
@@ -40,18 +61,118 @@ function MyEvent() {
               <p className="text-sm mb-4">Date: {new Date(event.date).toLocaleString()}</p>
               {event.applyLink && (
                 <a href={event.applyLink} target="_blank" rel="noopener noreferrer">
-                  <button className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2  px-4 rounded-full mt-4">
+                  <button className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full mt-4">
                     Apply Now
                   </button>
                 </a>
               )}
-              {/* <button className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full mt-4">
-                <Link to={`/event/${event._id}`}>Details</Link>
-              </button> */}
+              <button
+                className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full mt-4"
+                onClick={() => setSelectedEvent(event)}
+              >
+                Edit
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded-full mt-4"
+                onClick={() => handleDelete(event._id)}
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}
       </div>
+      {selectedEvent && (
+        <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-90 flex justify-center items-center">
+          <div className="bg-gray-200 p-4 rounded-lg w-1/2">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900">Update Event</h2>
+            <form>
+              <label>
+                Title:
+                <input
+                  type="text"
+                  value={selectedEvent.title}
+                  onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })}
+                  className="w-full p-2 rounded-md text-gray-900"
+                />
+              </label>
+              <br />
+              <label>
+                Description:
+                <input
+                  type="text"
+                  value={selectedEvent.description}
+                  onChange={(e) => setSelectedEvent({ ...selectedEvent, description: e.target.value })}
+                  className =" w-full p-2 rounded-md text-gray-900"
+                />
+              </label>
+              <br />
+              <label>
+                Category:
+                <input
+                  type="text"
+                  value={selectedEvent.category}
+                  onChange={(e) => setSelectedEvent({ ...selectedEvent, category: e.target.value })}
+                  className="w-full p-2 rounded-md text-gray-900"
+                />
+              </label>
+              <br />
+              <label>
+                Location:
+                <input
+                  type="text"
+                  value={selectedEvent.location}
+                  onChange={(e) => setSelectedEvent({ ...selectedEvent, location: e.target.value })}
+                  className="w-full p-2 rounded-md text-gray-900"
+                />
+              </label>
+              <br />
+              <label>
+                Company:
+                <input
+                  type="text"
+                  value={selectedEvent.company}
+                  onChange={(e) => setSelectedEvent({ ...selectedEvent, company: e.target.value })}
+                  className="w-full p-2 rounded-md text-gray-900"
+                />
+              </label>
+              <br />
+              <label>
+                Due Date:
+                <input
+                  type="date"
+                  value={selectedEvent.dueDate}
+                  onChange={(e) => setSelectedEvent({ ...selectedEvent, dueDate: e.target.value })}
+                  className="w-full p-2 rounded-md text-gray-900"
+                />
+              </label>
+              <br />
+              <label>
+                Apply Link:
+                <input
+                  type="text"
+                  value={selectedEvent.applyLink}
+                  onChange={(e) => setSelectedEvent({ ...selectedEvent, applyLink: e.target.value })}
+                  className="w-full p-2 rounded-md text-gray-900"
+                />
+              </label>
+              <br />
+              <button
+                className="bg-green-500 hover:bg-green-300 text-white font-bold py-2 px-4 rounded-full mt-4"
+                onClick={() => handleUpdate(selectedEvent._id)}
+              >
+                Update
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded-full mt-4"
+                onClick={() => setSelectedEvent(null)}
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
