@@ -28,7 +28,7 @@ const SignUpPage = () => {
     e.preventDefault();
     try {
       // Send form data as a JSON object
-      const response = await axios.post('http://localhost:5000/api/v1/campus-connect/user/register', formData,{
+      const response = await axios.post('http://localhost:3000/api/v1/campus-connect/user/register', formData,{
         withCredentials: true
       });
       console.log('Sign up successful:', response.data);
