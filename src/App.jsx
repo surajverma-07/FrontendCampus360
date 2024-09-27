@@ -25,7 +25,7 @@ function App() {
           </>
         ) : (
           <>
-            <Route path="*" element={navigate('/login')} exact />
+            <Route path="*" element={navigate('/login')} exact/>
           </>
         )}
       </Routes>
