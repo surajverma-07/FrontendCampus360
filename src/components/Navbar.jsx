@@ -16,29 +16,33 @@ import AddIcon from "@mui/icons-material/Add";
 import SchoolIcon from "@mui/icons-material/School";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { userState } from "../context/UserContext";
+
 const Navbar = () => {
   const { userData, setUserData, isAuthorized, setisAuthorized } = userState();
   const [open, setOpen] = React.useState(false);
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
+
+  const handleLogout = () => {
+    setisAuthorized(false); // Set authorization state to false
+    setUserData(null); // Clear user data on logout
+  };
+
   return (
     <>
-      {console.log("User Data :" + userData, "isAUthorized :" + isAuthorized)}
-      <div className="w-screen h-20 md:mb-10  flex items-center justify-between ">
-        <div className="text-3xl  md:ml-4 ml-1">
-          <Link to={"/"}>Campus360</Link>{" "}
+      <div className="w-screen h-20 md:mb-10 flex items-center justify-between">
+        <div className="text-3xl md:ml-4 ml-1">
+          <Link to={"/"}>Campus360</Link>
         </div>
+
+        {/* For smaller screens */}
         <div className="md:hidden">
           <Button onClick={toggleDrawer(true)}>
             <AddIcon />
           </Button>
           <Drawer open={open} onClose={toggleDrawer(false)}>
-            <Box
-              sx={{ width: 250 }}
-              role="presentation"
-              onClick={toggleDrawer(false)}
-            >
+            <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
               <List>
                 <Link to={"/"}>
                   <ListItem disablePadding>
@@ -46,11 +50,13 @@ const Navbar = () => {
                       <ListItemIcon>
                         <SchoolIcon />
                       </ListItemIcon>
-                      <div className="text-3xl py-3">Campus360</div>
+                      <ListItemText primary="Campus360" />
                     </ListItemButton>
                   </ListItem>
                 </Link>
                 <Divider />
+
+                {/* Conditional Rendering for Login/Logout in Drawer */}
                 {!isAuthorized ? (
                   <Link to={"/login"}>
                     <ListItem disablePadding>
@@ -63,7 +69,7 @@ const Navbar = () => {
                     </ListItem>
                   </Link>
                 ) : (
-                  <ListItem disablePadding>
+                  <ListItem disablePadding onClick={handleLogout}>
                     <ListItemButton>
                       <ListItemIcon>
                         <LogoutIcon />
@@ -85,28 +91,35 @@ const Navbar = () => {
                     </ListItemButton>
                   </ListItem>
                 </Link>
-                <Divider />
               </List>
             </Box>
           </Drawer>
         </div>
-        <div className="md:mr-5 hidden  text-xl mr-1 md:flex">
-          <div className="mx-4 rounded-lg  p-2 ">
-            <Link to={"/login"}>
-              {" "}
-              <Button variant="outlined">Login</Button>
-            </Link>
-          </div>
-          <div className="mx-4 rounded-lg  p-2 ">
-            <Link to={"/signup"}>
-              {" "}
-              <Button variant="outlined">SignUp</Button>
-            </Link>
-          </div>
+
+        {/* For larger screens */}
+        <div className="md:mr-5 hidden text-xl mr-1 md:flex">
+          {!isAuthorized ? (
+            <>
+              <div className="mx-4 rounded-lg p-2">
+                <Link to={"/login"}>
+                  <Button variant="outlined">Login</Button>
+                </Link>
+              </div>
+              <div className="mx-4 rounded-lg p-2">
+                <Link to={"/signup"}>
+                  <Button variant="outlined">Sign Up</Button>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <Button variant="outlined" onClick={handleLogout}>
+              Logout
+            </Button>
+          )}
           <Avatar
-            alt="Remy Sharp"
+            alt="User Avatar"
             className="mx-6"
-            src="/static/images/avatar/1.jpg"
+            src={userData?.avatarUrl || "/static/images/avatar/1.jpg"} // Use user's avatar if available
             sx={{ width: 50, height: 50 }}
           />
         </div>

@@ -32,7 +32,6 @@ const UserProvider = ({ children }) => {
       if(response.data.success){
         setIsAuthorized(true)
         setUserData(response.data)
-        navigate('/allpost')
       }
       } catch (error) {
         console.log(error)
