@@ -24,16 +24,13 @@ const Navbar = () => {
   };
   return (
     <>
-    {console.log("User Data :"+ userData , "isAUthorized :" + isAuthorized)}
+      {console.log("User Data :" + userData, "isAUthorized :" + isAuthorized)}
       <div className="w-screen h-20 md:mb-10  flex items-center justify-between ">
         <div className="text-3xl  md:ml-4 ml-1">
-          {" "}
           <Link to={"/"}>Campus360</Link>{" "}
         </div>
         <div className="md:hidden">
-          {" "}
           <Button onClick={toggleDrawer(true)}>
-            {" "}
             <AddIcon />
           </Button>
           <Drawer open={open} onClose={toggleDrawer(false)}>
@@ -54,21 +51,30 @@ const Navbar = () => {
                   </ListItem>
                 </Link>
                 <Divider />
-                {!isAuthorized && (
-                  <>
-                    <Link to={"/login"}>
-                      <ListItem disablePadding>
-                        <ListItemButton>
-                          <ListItemIcon>
-                            <PersonAddAltIcon />
-                          </ListItemIcon>
-                          <ListItemText primary={"Login"} />
-                        </ListItemButton>
-                      </ListItem>
-                    </Link>
-                    <Divider />
-                  </>
+                {!isAuthorized ? (
+                  <Link to={"/login"}>
+                    <ListItem disablePadding>
+                      <ListItemButton>
+                        <ListItemIcon>
+                          <PersonAddAltIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={"Login"} />
+                      </ListItemButton>
+                    </ListItem>
+                  </Link>
+                ) : (
+                  <ListItem disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <LogoutIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={"Logout"} />
+                    </ListItemButton>
+                  </ListItem>
                 )}
+
+                <Divider />
+
                 <Link to={"/signup"}>
                   <ListItem disablePadding>
                     <ListItemButton>
@@ -80,14 +86,6 @@ const Navbar = () => {
                   </ListItem>
                 </Link>
                 <Divider />
-                <ListItem disablePadding>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <LogoutIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={"Logout"} />
-                  </ListItemButton>
-                </ListItem>
               </List>
             </Box>
           </Drawer>

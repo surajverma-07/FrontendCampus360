@@ -28,9 +28,11 @@ const UserProvider = ({ children }) => {
       try {
         const response = await axios.get("http://localhost:3000/api/v1/campus-connect/user/current-user",{withCredentials:true});
         console.log("User data:", response.data.success);
+
       if(response.data.success){
         setIsAuthorized(true)
         setUserData(response.data)
+        navigate('/allpost')
       }
       } catch (error) {
         console.log(error)
