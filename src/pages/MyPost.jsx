@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { User, MessageSquare, Heart } from 'lucide-react';
 
-function AllPost() {
+function MyPost() {
   const [posts, setPosts] = useState([]);
   const [visibleComments, setVisibleComments] = useState({});
   const [newComments, setNewComments] = useState({});
@@ -15,8 +15,10 @@ function AllPost() {
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/v1/campus-connect/post/all', { withCredentials: true });
+      const response = await axios.get('http://localhost:3000/api/v1/campus-connect/post/my', { withCredentials: true });
       setPosts(response.data.data.posts);
+      console.log(response.data.data.posts);
+      
     } catch (error) {
       toast.error('Failed to fetch posts!');
     }
@@ -54,7 +56,7 @@ function AllPost() {
 
   return (
     <div className="container mx-auto px-8 md:px-4 pt-32 md:pt-6 bg-[#030717] text-white">
-      <h1 className="text-3xl font-bold text-center mb-8">All Posts</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">My Posts</h1>
       <div className="flex flex-wrap justify-center xl:gap-x-20 mb-8">
         {posts ? posts.map((post) => (
           <div key={post._id} className="bg-gray-100 rounded-lg shadow-md overflow-hidden w-full md:w-1/2 lg:w-1/3 xl:w-1/4 mb-4 text-black">
@@ -124,4 +126,4 @@ function AllPost() {
   );
 }
 
-export default AllPost;
+export default MyPost;
