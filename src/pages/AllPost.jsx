@@ -9,7 +9,7 @@ function AllPost() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/v1/campus-connect/post/all');
+        const response = await axios.get('http://localhost:3000/api/v1/campus-connect/post/all',{withCredentials:true});
         setPosts(response.data.posts);
         console.log("posts : ", response.data.posts);
       } catch (error) {
@@ -24,7 +24,7 @@ function AllPost() {
     <div className="container mx-auto px-8 md:px-4 pt-32 md:pt-6 bg-[#030717] text-white">
       <h1 className="text-3xl font-bold text-center mb-8 ">All Posts</h1>
       <div className="flex flex-wrap justify-center xl:gap-x-20 mb-8">
-        {posts.map((post) => (
+        {posts ?  posts.map((post) => (
           <div
             key={post._id}
             className="bg-[#212931] rounded-lg shadow-md p-6 w-full md:w-1/2 lg:w-1/3 xl:w-1/4 mb-4"
@@ -53,7 +53,9 @@ function AllPost() {
               <Link to={`/post/${post._id}`}>Details</Link>
             </button>
           </div>
-        ))}
+        ))
+        :"<div> No Post Available </div>"}
+       
       </div>
     </div>
   );
