@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
-function AllEvents() {
+function AllEvent() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
@@ -12,7 +12,7 @@ function AllEvents() {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/v1/campus-connect/event/all');
+      const response = await axios.get('http://localhost:3000/api/v1/campus-connect/event/all',{withCredentials:true});
       setEvents(response.data.data.events);
     } catch (error) {
       toast.error('Failed to fetch events!');
@@ -40,14 +40,14 @@ function AllEvents() {
               <p className="text-sm mb-4">Date: {new Date(event.date).toLocaleString()}</p>
               {event.applyLink && (
                 <a href={event.applyLink} target="_blank" rel="noopener noreferrer">
-                  <button className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full mt-4">
+                  <button className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2  px-4 rounded-full mt-4">
                     Apply Now
                   </button>
                 </a>
               )}
-              <button className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full mt-4">
+              {/* <button className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full mt-4">
                 <Link to={`/event/${event._id}`}>Details</Link>
-              </button>
+              </button> */}
             </div>
           </div>
         ))}
@@ -56,4 +56,4 @@ function AllEvents() {
   );
 }
 
-export default AllEvents;
+export default AllEvent;

@@ -5,6 +5,10 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import AllPost from "./pages/AllPost";
 import MyPost from "./pages/MyPost";
+import AllEvents from "./pages/AllEvent";
+import MyEvent from "./pages/MyEvent";
+import AllCareers from "./pages/AllCareers";
+import MyCareers from "./pages/MyCareers";
 import { userState } from "./context/UserContext";
 
 function App() {
@@ -22,6 +26,10 @@ function App() {
           <>
             <Route path="/allpost" element={<AllPost />} exact />
             <Route path="/mypost" element={<MyPost />} exact />
+            <Route path="/allevent" element={<AllEvents />} exact />
+            <Route path="/myevent" element={<MyEvent/>} exact />
+            <Route path="/allcareer" element={<AllCareers/>} exact />
+            <Route path="/mycareer" element={<MyCareers/>} exact />
           </>
         ) : (
           <>
