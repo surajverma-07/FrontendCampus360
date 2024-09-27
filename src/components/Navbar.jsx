@@ -31,9 +31,6 @@ const Navbar = () => {
       "http://localhost:3000/api/v1/campus-connect/user/logout",
       { withCredentials: true }
     );
-    console.log(response)
-    setisAuthorized(false); 
-    setUserData(null); 
   };
 
   return (
@@ -63,7 +60,6 @@ const Navbar = () => {
                 </Link>
                 <Divider />
 
-                {/* Conditional Rendering for Login/Logout in Drawer */}
                 {!isAuthorized ? (
                   <Link to={"/login"}>
                     <ListItem disablePadding>
@@ -104,7 +100,6 @@ const Navbar = () => {
           </Drawer>
         </div>
 
-        {/* For larger screens */}
         <div className="md:mr-5 hidden text-xl mr-1 md:flex">
           {!isAuthorized ? (
             <>

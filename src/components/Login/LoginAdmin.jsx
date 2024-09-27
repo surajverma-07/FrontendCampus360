@@ -16,15 +16,8 @@ function LoginAdmin() {
         password,
     }, { withCredentials: true });
     
-    console.log(response.data);
-    
-    localStorage.setItem('testKey', 'testValue');
-    console.log(localStorage.getItem('testKey')); // Should log 'testValue'
-    
-    localStorage.setItem('UserInfo', JSON.stringify(response.data.data));  
-    
     } catch (error) {
-      setError(error.response.data.message);
+      setError(error);
     } finally {
       setLoading(false);
     }
