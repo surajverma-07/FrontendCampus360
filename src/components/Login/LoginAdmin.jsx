@@ -6,7 +6,7 @@ function LoginAdmin() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -14,9 +14,15 @@ function LoginAdmin() {
       const response = await axios.post('http://localhost:3000/api/v1/campus-connect/admin/login', {
         email,
         password,
-      },{withCredentials:true});
-      console.log(response.data);
-      // Handle successful login
+    }, { withCredentials: true });
+    
+    console.log(response.data);
+    
+    localStorage.setItem('testKey', 'testValue');
+    console.log(localStorage.getItem('testKey')); // Should log 'testValue'
+    
+    localStorage.setItem('UserInfo', JSON.stringify(response.data.data));  
+    
     } catch (error) {
       setError(error.response.data.message);
     } finally {
