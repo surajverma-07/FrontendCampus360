@@ -14,7 +14,7 @@ function LoginAdmin() {
       const response = await axios.post('http://localhost:3000/api/v1/campus-connect/admin/login', {
         email,
         password,
-      });
+      },{withCredentials:true});
       console.log(response.data);
       // Handle successful login
     } catch (error) {

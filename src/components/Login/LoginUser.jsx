@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useNavigate} from 'react-router-dom';
+
 
 function LoginPage() {
   const [loginType, setLoginType] = useState('rollnum');
@@ -7,7 +10,7 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const navigateTo = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -15,8 +18,10 @@ function LoginPage() {
       const response = await axios.post('http://localhost:3000/api/v1/campus-connect/user/login', {
         [loginType]: loginValue,
         password,
-      });
+      },{withCredentials:true});
       console.log(response.data);
+      toast.success("Login Successfully");
+      navigateTo('/allpost')
       // Handle successful login
     } catch (error) {
       setError(error.response.data.message);
