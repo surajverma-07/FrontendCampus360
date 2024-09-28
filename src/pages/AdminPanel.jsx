@@ -95,7 +95,7 @@ export default function AdminPanel() {
   // Fetch reported users
   const fetchReportedUsers = async () => {
     try {
-      const { data } = await axios.get('http://localhost:3000/api/v1/campus-connect/admin/reported-users/', { withCredentials: true });
+      const { data } = await axios.get('http://localhost:3000/api/v1/campus-connect/admin/reported-users/college', { withCredentials: true });
       setReportedUsers(data.data.reportedUsers);
     } catch (error) {
       console.error('Error fetching reported users:', error);
@@ -110,7 +110,7 @@ export default function AdminPanel() {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch('http://localhost:3000/api/v1/campus-connect/admin/update-details/', profileForm, { withCredentials: true });
+      await axios.patch('http://localhost:3000/api/v1/campus-connect/admin/profile/update', profileForm, { withCredentials: true });
       alert('Profile updated successfully');
       fetchProfile();
     } catch (error) {
@@ -123,7 +123,7 @@ export default function AdminPanel() {
   const handleChangePassword = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch('http://localhost:3000/api/v1/campus-connect/admin/change-password/', passwordForm, { withCredentials: true });
+      await axios.patch('http://localhost:3000/api/v1/campus-connect/admin/profile/change-password/', passwordForm, { withCredentials: true });
       alert('Password changed successfully');
       setPasswordForm({ oldPassword: '', newPassword: '' });
     } catch (error) {
@@ -135,7 +135,7 @@ export default function AdminPanel() {
   // Block/Unblock user
   const handleUserBlockToggle = async (userId, action) => {
     try {
-      await axios.patch(`http://localhost:3000/api/v1/campus-connect/admin/${action}-user/${userId}`, {}, { withCredentials: true });
+      await axios.patch(`http://localhost:3000/api/v1/campus-connect/admin/user/${action}/${userId}`, {}, { withCredentials: true });
       alert(`User ${action === 'block' ? 'blocked' : 'unblocked'} successfully`);
       fetchUsers();
     } catch (error) {
@@ -147,7 +147,7 @@ export default function AdminPanel() {
   // Approve/Reject application
   const handleApplicationAction = async (userId, action) => {
     try {
-      await axios.patch(`http://localhost:3000/api/v1/campus-connect/admin/${action}-application/${userId}`, {}, { withCredentials: true });
+      await axios.patch(`http://localhost:3000/api/v1/campus-connect/admin/event-organizer/${action}/${userId}`, {}, { withCredentials: true });
       alert(`Application ${action === 'approve' ? 'approved' : 'rejected'} successfully`);
       fetchEventOrganizerApplications();
     } catch (error) {
