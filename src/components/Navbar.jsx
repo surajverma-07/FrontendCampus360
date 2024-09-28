@@ -1,7 +1,4 @@
 import React from "react";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 import Avatar from "@mui/material/Avatar";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -19,7 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import SchoolIcon from "@mui/icons-material/School";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { userState } from "../context/UserContext";
-import FormControl from '@mui/material/FormControl';
+import { Select } from "@chakra-ui/react";
 import axios from "axios";
 
 const Navbar = () => {
@@ -38,9 +35,16 @@ const Navbar = () => {
     navigate("/");
   };
 
+  const handleNavigation = (event) => {
+    const value = event.target.value;
+    if (value) {
+      navigate(value);
+    }
+  };
+
   return (
     <>
-      <div className="w-screen h-16 md:mb-4 flex items-center justify-between">
+      <div className="w-screen h-20 md:mb-2 flex items-center justify-between">
         <div className="text-3xl md:ml-4 ml-1">
           <Link to={"/"}>Campus360</Link>
         </div>
@@ -70,30 +74,43 @@ const Navbar = () => {
 
                 {isAuthorized ? (
                   <>
-                   <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Age</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={""}
-          label="Age"
-          // onChange={handleChange}
-        >
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
-        </Select>
-      </FormControl>
-    </Box>
- <ListItem disablePadding onClick={handleLogout}>
-                      <ListItemButton>
-                        <ListItemIcon>
-                          <LogoutIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Logout"} />
-                      </ListItemButton>
-                    </ListItem>
+                    <Select
+                      className="w-40 p-2 border-2 border-blue-800"
+                      placeholder="See More"
+                      size="lg"
+                      onChange={(e) => {
+                        const selectedValue = e.target.value;
+                        if (selectedValue) {
+                          navigate(selectedValue); // Navigate to the selected route
+                        }
+                      }}
+                    >
+                      <option value="/allcareer">All Career</option>
+                      <option value="/allevent">All Event</option>
+                      <option value="/allpost">All Post</option>
+                      <option value="/allproducts">All Products</option>
+                      <option value="/mycareer">My Careers</option>
+                      <option value="/myevent">My Event</option>
+                      <option value="/mypost">My Post</option>
+                      <option value="/myproducts">My Products</option>
+                    </Select>
+
+                    <div className="w-40">
+                      <ListItem disablePadding onClick={handleLogout}>
+                        <ListItemButton>
+                          <ListItemIcon>
+                            <LogoutIcon />
+                          </ListItemIcon>
+                          <ListItemText primary={"Logout"} />
+                        </ListItemButton>
+                      </ListItem>
+                    </div>
+                    <Avatar
+                      alt="User Avatar"
+                      className="mx-6"
+                      src={userData?.avatarUrl || "/static/images/avatar/1.jpg"}
+                      sx={{ width: 50, height: 50 }}
+                    />
                   </>
                 ) : (
                   <>
@@ -145,39 +162,40 @@ const Navbar = () => {
           )}
           {isAuthorized ? (
             <>
-              <InputLabel id="demo-simple-select-label">Age</InputLabel>
               <Select
-                className="w-32"
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={"SEE MORE"}
-                label="See More"
-                // onChange={handleChange}
+                className="w-40 p-2 border-2 border-blue-800"
+                placeholder="See More"
+                size="lg"
+                onChange={(e) => {
+                  const selectedValue = e.target.value;
+                  if (selectedValue) {
+                    navigate(selectedValue); // Navigate to the selected route
+                  }
+                }}
               >
-                <MenuItem value={10}>All Careers</MenuItem>
-                <MenuItem value={20}>All Events</MenuItem>
-                <MenuItem value={30}>All Post</MenuItem>
-                <MenuItem value={40}>All Products</MenuItem>
-                <MenuItem value={50}>My Careers</MenuItem>
-                <MenuItem value={60}>My Events</MenuItem>
-                <MenuItem value={70}>My Post</MenuItem>
-                <MenuItem value={80}>My Products</MenuItem>
-                <MenuItem value={90}>All post</MenuItem>
+                <option value="/allcareer">All Career</option>
+                <option value="/allevent">All Event</option>
+                <option value="/allpost">All Post</option>
+                <option value="/allproducts">All Products</option>
+                <option value="/mycareer">My Careers</option>
+                <option value="/myevent">My Event</option>
+                <option value="/mypost">My Post</option>
+                <option value="/myproducts">My Products</option>
               </Select>
+
               <Button variant="outlined" onClick={handleLogout}>
                 Logout
               </Button>
+              <Avatar
+                alt="User Avatar"
+                className="mx-6"
+                src={userData?.avatarUrl || "/static/images/avatar/1.jpg"}
+                sx={{ width: 50, height: 50 }}
+              />
             </>
           ) : (
             ""
           )}
-
-          <Avatar
-            alt="User Avatar"
-            className="mx-6"
-            src={userData?.avatarUrl || "/static/images/avatar/1.jpg"}
-            sx={{ width: 50, height: 50 }}
-          />
         </div>
       </div>
     </>
