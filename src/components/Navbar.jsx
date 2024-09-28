@@ -18,6 +18,16 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { userState } from "../context/UserContext";
 import { Select } from "@chakra-ui/react";
 import axios from "axios";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/react";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -26,6 +36,7 @@ const Navbar = () => {
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleLogout = async () => {
     const response = await axios.get(
@@ -81,7 +92,7 @@ const Navbar = () => {
                       onChange={(e) => {
                         const selectedValue = e.target.value;
                         if (selectedValue) {
-                          navigate(selectedValue); // Navigate to the selected route
+                          navigate(selectedValue);
                         }
                       }}
                     >
@@ -110,7 +121,30 @@ const Navbar = () => {
                       className="mx-6"
                       src={userData?.avatarUrl || "/static/images/avatar/1.jpg"}
                       sx={{ width: 50, height: 50 }}
+                      onClick={onOpen}
                     />
+                    <Modal
+                      closeOnOverlayClick={false}
+                      isOpen={isOpen}
+                      onClose={onClose}
+                    >
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalHeader>Create your account</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>
+                          Lorem ipsum, dolor sit amet consectetur adipisicing
+                          elit. Voluptatibus, aliquid!
+                        </ModalBody>
+
+                        <ModalFooter>
+                          <Button colorScheme="blue" mr={3}>
+                            Save
+                          </Button>
+                          <Button onClick={onClose}>Cancel</Button>
+                        </ModalFooter>
+                      </ModalContent>
+                    </Modal>
                   </>
                 ) : (
                   <>
@@ -169,7 +203,7 @@ const Navbar = () => {
                 onChange={(e) => {
                   const selectedValue = e.target.value;
                   if (selectedValue) {
-                    navigate(selectedValue); // Navigate to the selected route
+                    navigate(selectedValue);
                   }
                 }}
               >
@@ -191,7 +225,30 @@ const Navbar = () => {
                 className="mx-6"
                 src={userData?.avatarUrl || "/static/images/avatar/1.jpg"}
                 sx={{ width: 50, height: 50 }}
+                onClick={onOpen}
               />
+              <Modal
+                closeOnOverlayClick={false}
+                isOpen={isOpen}
+                onClose={onClose}
+                isCentered // This will center the modal on the screen
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Create your account</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody pb={6}>
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                    Voluptatibus, aliquid!
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button colorScheme="blue" mr={3}>
+                      Save
+                    </Button>
+                    <Button onClick={onClose}>Cancel</Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
             </>
           ) : (
             ""
