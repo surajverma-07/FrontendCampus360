@@ -35,6 +35,13 @@ const Navbar = () => {
     navigate("/");
   };
 
+  const handleNavigation = (event) => {
+    const value = event.target.value;
+    if (value) {
+      navigate(value);
+    }
+  };
+
   return (
     <>
       <div className="w-screen h-20 md:mb-2 flex items-center justify-between">
@@ -71,55 +78,23 @@ const Navbar = () => {
                       className="w-40 p-2 border-2 border-blue-800"
                       placeholder="See More"
                       size="lg"
+                      onChange={(e) => {
+                        const selectedValue = e.target.value;
+                        if (selectedValue) {
+                          navigate(selectedValue); // Navigate to the selected route
+                        }
+                      }}
                     >
-                      <option value="option1">
-                        <Link
-                          className="w-full h-full "
-                          to={"/allcareer"}
-                        >
-                        All Career</Link>
-                      </option>
-                      <option value="option2">
-                        <Link
-                          className="w-full h-full "
-                          to={"/allevent"}
-                        >
-                        All Event</Link>
-                      </option>
-                      <option value="option3">
-                        <Link className="w-full h-full " to={"/allpost"}></Link>
-                        All Post
-                      </option>
-                      <option value="option3">
-                        <Link
-                          className="w-full h-full "
-                          to={"/allproducts"}
-                        >
-                        All Products</Link>
-                      </option>
-                      <option value="option3">
-                        <Link
-                          className="w-full h-full "
-                          to={"/mycareer"}
-                        >
-                        My Careers</Link>
-                      </option>
-                      <option value="option3">
-                        <Link className="w-full h-full " to={"/myevent"}>
-                        My Event</Link>
-                      </option>
-                      <option value="option3">
-                        <Link className="w-full h-full " to={"/mypost"}>
-                        My Post</Link>
-                      </option>
-                      <option value="option3">
-                        <Link
-                          className="w-full h-full "
-                          to={"/myproducts"}
-                        >
-                        My Products</Link>
-                      </option>
+                      <option value="/allcareer">All Career</option>
+                      <option value="/allevent">All Event</option>
+                      <option value="/allpost">All Post</option>
+                      <option value="/allproducts">All Products</option>
+                      <option value="/mycareer">My Careers</option>
+                      <option value="/myevent">My Event</option>
+                      <option value="/mypost">My Post</option>
+                      <option value="/myproducts">My Products</option>
                     </Select>
+
                     <div className="w-40">
                       <ListItem disablePadding onClick={handleLogout}>
                         <ListItemButton>
@@ -191,42 +166,26 @@ const Navbar = () => {
                 className="w-40 p-2 border-2 border-blue-800"
                 placeholder="See More"
                 size="lg"
+                onChange={(e) => {
+                  const selectedValue = e.target.value;
+                  if (selectedValue) {
+                    navigate(selectedValue); // Navigate to the selected route
+                  }
+                }}
               >
-                <option value="option1">
-                  <Link className="w-full h-full " to={"/allcareer"}>All
-                  Career</Link>
-                </option>
-                <option value="option2">
-                  <Link className="w-full h-full " to={"/allevent"}>All
-                  Event</Link>
-                </option>
-                <option value="option3">
-                  <Link className="w-full h-full " to={"/allpost"}>All
-                  Post</Link>
-                </option>
-                <option value="option3">
-                  <Link className="w-full h-full " to={"/allproducts"}>
-                  All Products</Link>
-                </option>
-                <option value="option3">
-                  <Link className="w-full h-full " to={"/mycareer"}>My
-                  Careers</Link>
-                </option>
-                <option value="option3">
-                  <Link className="w-full h-full " to={"/myevent"}>My
-                  Event</Link>
-                </option>
-                <option value="option3">
-                  <Link className="w-full h-full " to={"/mypost"}>My Post</Link>
-                </option>
-                <option value="option3">
-                  <Link className="w-full h-full " to={"/myproducts"}>My
-                  Products</Link>
-                </option>
+                <option value="/allcareer">All Career</option>
+                <option value="/allevent">All Event</option>
+                <option value="/allpost">All Post</option>
+                <option value="/allproducts">All Products</option>
+                <option value="/mycareer">My Careers</option>
+                <option value="/myevent">My Event</option>
+                <option value="/mypost">My Post</option>
+                <option value="/myproducts">My Products</option>
               </Select>
+
               <Button variant="outlined" onClick={handleLogout}>
                 Logout
-              </Button>{" "}
+              </Button>
               <Avatar
                 alt="User Avatar"
                 className="mx-6"
