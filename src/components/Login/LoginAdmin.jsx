@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { userState } from '../../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 function LoginAdmin() {
   const [email, setEmail] = useState('');
@@ -8,6 +9,7 @@ function LoginAdmin() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const { setUserData, setIsAuthorized } = userState();
+  const navigateTo = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,6 +24,7 @@ function LoginAdmin() {
         setUserData(response.data);
         setIsAuthorized(true); // Set authorization state
         console.log("Admin logged in successfully");
+        navigateTo('/allevent')
       }
     } catch (error) {
       setError(error);
