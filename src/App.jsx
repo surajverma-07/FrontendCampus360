@@ -12,18 +12,19 @@ import MyCareers from "./pages/MyCareers";
 import AllProducts from "./pages/AllProducts";
 import MyProducts from "./pages/MyProducts";
 import { userState } from "./context/UserContext";
+import AdminPanel from "./pages/AdminPanel";
 
 function App() {
   const navigate = useNavigate();
   const { isAuthorized } = userState();
 
-  // Effect to redirect unauthorized users to the login page
+  
   useEffect(() => {
     if (isAuthorized === false) {
       console.log("isAuthorized is false, redirecting to login");
       navigate("/login");
     }
-  }, [isAuthorized, navigate]); // Add isAuthorized and navigate to dependencies
+  }, [isAuthorized, navigate]); 
 
   return (
     <>
@@ -39,6 +40,7 @@ function App() {
         <Route path="/mycareer" element={<MyCareers />} exact />
         <Route path="/allproducts" element={<AllProducts />} exact />
         <Route path="/myproducts" element={<MyProducts />} exact />
+        <Route path="/adminpanel" element={<AdminPanel />} exact />
 
       </Routes>
     </>

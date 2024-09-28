@@ -1,4 +1,7 @@
 import React from "react";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import Avatar from "@mui/material/Avatar";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -16,6 +19,7 @@ import AddIcon from "@mui/icons-material/Add";
 import SchoolIcon from "@mui/icons-material/School";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { userState } from "../context/UserContext";
+import FormControl from '@mui/material/FormControl';
 import axios from "axios";
 
 const Navbar = () => {
@@ -36,7 +40,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="w-screen h-20 md:mb-10 flex items-center justify-between">
+      <div className="w-screen h-16 md:mb-4 flex items-center justify-between">
         <div className="text-3xl md:ml-4 ml-1">
           <Link to={"/"}>Campus360</Link>
         </div>
@@ -64,40 +68,59 @@ const Navbar = () => {
                 </Link>
                 <Divider />
 
-                {!isAuthorized ? (
-                  <Link to={"/login"}>
-                    <ListItem disablePadding>
+                {isAuthorized ? (
+                  <>
+                   <Box sx={{ minWidth: 120 }}>
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Age</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={""}
+          label="Age"
+          // onChange={handleChange}
+        >
+          <MenuItem value={10}>Ten</MenuItem>
+          <MenuItem value={20}>Twenty</MenuItem>
+          <MenuItem value={30}>Thirty</MenuItem>
+        </Select>
+      </FormControl>
+    </Box>
+ <ListItem disablePadding onClick={handleLogout}>
                       <ListItemButton>
                         <ListItemIcon>
-                          <PersonAddAltIcon />
+                          <LogoutIcon />
                         </ListItemIcon>
-                        <ListItemText primary={"Login"} />
+                        <ListItemText primary={"Logout"} />
                       </ListItemButton>
                     </ListItem>
-                  </Link>
+                  </>
                 ) : (
-                  <ListItem disablePadding onClick={handleLogout}>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <LogoutIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={"Logout"} />
-                    </ListItemButton>
-                  </ListItem>
+                  <>
+                    <Link to={"/login"}>
+                      <ListItem disablePadding>
+                        <ListItemButton>
+                          <ListItemIcon>
+                            <PersonAddAltIcon />
+                          </ListItemIcon>
+                          <ListItemText primary={"Login"} />
+                        </ListItemButton>
+                      </ListItem>
+                    </Link>
+                    <Divider />
+
+                    <Link to={"/signup"}>
+                      <ListItem disablePadding>
+                        <ListItemButton>
+                          <ListItemIcon>
+                            <PersonPinIcon />
+                          </ListItemIcon>
+                          <ListItemText primary={"Signup"} />
+                        </ListItemButton>
+                      </ListItem>
+                    </Link>
+                  </>
                 )}
-
-                <Divider />
-
-                <Link to={"/signup"}>
-                  <ListItem disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <PersonPinIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={"Signup"} />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
               </List>
             </Box>
           </Drawer>
@@ -121,9 +144,30 @@ const Navbar = () => {
             </>
           )}
           {isAuthorized ? (
-            <Button variant="outlined" onClick={handleLogout}>
-              Logout
-            </Button>
+            <>
+              <InputLabel id="demo-simple-select-label">Age</InputLabel>
+              <Select
+                className="w-32"
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={"SEE MORE"}
+                label="See More"
+                // onChange={handleChange}
+              >
+                <MenuItem value={10}>All Careers</MenuItem>
+                <MenuItem value={20}>All Events</MenuItem>
+                <MenuItem value={30}>All Post</MenuItem>
+                <MenuItem value={40}>All Products</MenuItem>
+                <MenuItem value={50}>My Careers</MenuItem>
+                <MenuItem value={60}>My Events</MenuItem>
+                <MenuItem value={70}>My Post</MenuItem>
+                <MenuItem value={80}>My Products</MenuItem>
+                <MenuItem value={90}>All post</MenuItem>
+              </Select>
+              <Button variant="outlined" onClick={handleLogout}>
+                Logout
+              </Button>
+            </>
           ) : (
             ""
           )}
