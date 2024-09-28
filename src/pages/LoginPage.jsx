@@ -43,19 +43,21 @@ export default function LoginPage() {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', width: '100%', maxWidth: 'lg', mx: 'auto' }}>
+        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
           <Tab label="Student Login" {...a11yProps(0)} />
           <Tab label="Admin Login" {...a11yProps(1)} />
         </Tabs>
       </Box>
-      <CustomTabPanel value={value} index={0}>
-        <LoginUser />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        <LoginAdmin />
-      </CustomTabPanel>
+      <Box sx={{ width: '100%', maxWidth: 'lg', mx: 'auto', mt: -13 }}>
+        <CustomTabPanel value={value} index={0}>
+          <LoginUser />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          <LoginAdmin />
+        </CustomTabPanel>
+      </Box>
     </Box>
   );
 }

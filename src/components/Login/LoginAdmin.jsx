@@ -1,7 +1,9 @@
+// AdminLogin.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { userState } from '../../context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { Box, Container, Grid, Typography, Button, TextField, CircularProgress } from '@mui/material';
 
 function LoginAdmin() {
   const [email, setEmail] = useState('');
@@ -34,56 +36,53 @@ function LoginAdmin() {
   };
 
   return (
-    <div className="flex h-fit justify-center ">
-      <div className="max-w-md w-full p-4 bg-white rounded-lg shadow-md flex flex-col lg:flex-row">
-        <div className="lg:w-1/2 lg:h-96 md:h-48 sm:h-36 h-24">
-          <img
-            src="/login.jpg"
-            alt="Login Image"
-            className="w-full h-full object-cover object-center"
-          />
-        </div>
-        <div className="lg:w-1/2 p-4 lg:p-8">
-          <h2 className="text-2xl font-bold mb-4">Admin Login</h2>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-              Email
-            </label>
-            <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-              Password
-            </label>
-            <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button
-            onClick={handleSubmit}
-            className={`mt-4 w-full py-2 px-4 bg-blue-500 text-white rounded ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            disabled={loading}
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-          {error && <p className="text-red-500 mt-2">{error.message}</p>}
-        </div>
-      </div>
-    </div>
+    <Container maxWidth="lg" sx={{ mt: 10, p: 4, backgroundColor: 'white', borderRadius: 2, boxShadow: 2 }}>
+      <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
+        <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <img src="/login.jpg" alt="Login Image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </Grid>
+        <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Box sx={{ p: 4 }}>
+            <Typography variant="h4" sx={{ mb: 2 }}>
+              Admin Login
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <TextField
+                label="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{ mt: 2, backgroundColor: 'blue', '&:hover': { backgroundColor: 'darkblue' } }}
+                disabled={loading}
+              >
+                {loading ? (
+                  <CircularProgress size={24} sx={{ color: 'white' }} />
+                ) : (
+                  'Login'
+                )}
+              </Button>
+              {error && <Typography variant="body2" sx={{ color: 'red', mt: 2 }}>{error.message}</Typography>}
+            </form>
+          </Box>
+        </Grid>
+      </Grid>
+    </Container>
   );
 }
 
