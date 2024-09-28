@@ -1,81 +1,148 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // For making API calls
-import { useNavigate } from 'react-router-dom'; // For navigation
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function MyProducts() {
-  const [products, setProducts] = useState([]); // Initialize as an empty array
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate(); // To navigate for actions like edit
+  const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Fetch the products when the component loads
   useEffect(() => {
-    const fetchMyProducts = async () => {
-      try {
-        const response = await axios.get('/api/products/my', {
-         withCredentials:true
-        });
-        setProducts(response.data.products || []); // Ensure products is always an array
-        console.log(response.data);
-        
-        setLoading(false);
-      } catch (err) {
-        setError(err.response?.data?.message || 'Error fetching products');
-        setLoading(false);
-      }
-    };
-
-    fetchMyProducts();
+    fetchProducts();
   }, []);
 
-  // Handle Edit button (optional)
-  const handleEdit = (productId) => {
-    navigate(`/products/edit/${productId}`);
-  };
-
-  // Handle Delete button (optional)
-  const handleDelete = async (productId) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      try {
-        await axios.delete(`/api/products/delete/${productId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`, // Include JWT token
-          },
-        });
-        setProducts(products.filter(product => product._id !== productId)); // Remove from state after deletion
-      } catch (err) {
-        alert('Failed to delete the product');
-      }
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/api/v1/campus-store/products/my', { withCredentials: true });
+      setProducts(response.data.data.products);
+      console.log(response.data)
+    } catch (error) {
+      console.error('Failed to fetch products!');
     }
   };
 
-  if (loading) {
-    return <div>Loading your products...</div>;
-  }
+  const handleUpdate = async (id) => {
+    try {
+      const response = await axios.patch(`http://localhost:3000/api/v1/campus-store/products/update/${id}`, selectedProduct, { withCredentials: true });
+      toast.success('Product updated successfully!');
+      fetchProducts();
+    } catch (error) {
+      toast.error('Failed to update product!');
+    }
+  };
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/v1/campus-store/products/delete/${id}`, { withCredentials: true });
+      toast.success('Product deleted successfully!');
+      fetchProducts();
+    } catch (error) {
+      toast.error('Failed to delete product!');
+    }
+  };
 
   return (
     <div>
-      <h2>My Products</h2>
-      {products.length === 0 ? (
-        <p>No products found.</p>
-      ) : (
-        <ul>
-          {products.map((product) => (
-            <li key={product._id} style={{ border: '1px solid #ddd', padding: '10px', marginBottom: '10px' }}>
-              <h3>{product.name}</h3>
-              <p><strong>Price:</strong> ${product.price}</p>
-              <p><strong>Category:</strong> {product.category}</p>
-              <p><strong>Description:</strong> {product.description}</p>
-              <p><strong>Sold:</strong> {product.sold ? 'Yes' : 'No'}</p>
-              <button onClick={() => handleEdit(product._id)}>Edit</button>
-              <button onClick={() => handleDelete(product._id)} style={{ marginLeft: '10px' }}>Delete</button>
-            </li>
-          ))}
-        </ul>
+      <h1 className="text-3xl font-bold text-center mb-8">My Products</h1>
+      <div className="flex flex-wrap justify-center xl:gap-x-20 mb-8">
+        {products.map((product) => (
+          <div key={product._id} className="bg-gray-100 rounded-lg shadow-md overflow-hidden w-full md:w-1/2 lg:w-1/3 xl:w-1/4 mb-4 text-black">
+            <div className="p-4">
+              <div className="bg-white rounded-lg aspect-square flex items-center justify-center mb-4 overflow-hidden">
+                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+              </div>
+              <h2 className="text-2xl font-bold mb-4">{product.name}</h2>
+              <p className="text-sm mb-4">Category: {product.category}</p>
+              <p className="text-sm mb-4">Price: ₹{product.price}</p>
+              <p className="text-sm mb-4">Description: {product.description}</p>
+              <p className="text-sm mb-4">Seller: {product.sellerId}</p>
+              {product.college && (
+                <p className="text-sm mb-4">College: {product.college}</p>
+              )}
+              <button
+                className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full mt-4"
+                onClick={() => setSelectedProduct(product)}
+              >
+                Edit
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded-full mt-4"
+                onClick={() => handleDelete(product._id)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      {selectedProduct && (
+        <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-90 flex justify-center items-center">
+          <div className="bg-gray-200 p-4 rounded-lg w-1/2">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900">Update Product</h2>
+            <form>
+              <label>
+                Name:
+                <input
+                  type="text"
+                  value={selectedProduct.name}
+                  onChange={(e) => setSelectedProduct({ ...selectedProduct, name: e.target.value })}
+                  className="w-full p-2 rounded-md text-gray-900"
+                />
+              </label>
+              <br />
+              <label>
+                Description:
+                <input
+                  type="text"
+                  value={selectedProduct.description}
+                  onChange={(e) => setSelectedProduct({ ...selectedProduct, description: e.target.value })}
+                  className="w-full p-2 rounded-md text-gray-900"
+                />
+              </label>
+              <br />
+              <label>
+                Price:
+                <input
+                  type="number"
+                  value={selectedProduct.price}
+                  onChange={(e) => setSelectedProduct({ ...selectedProduct, price: e.target.value })}
+                  className="w-full p-2 rounded-md text-gray-900"
+                />
+              </label>
+              <br />
+              <label>
+                Category:
+                <input
+                  type="text"
+                  value={selectedProduct.category}
+ onChange={(e) => setSelectedProduct({ ...selectedProduct, category: e.target.value })}
+                  className="w-full p-2 rounded-md text-gray-900"
+                />
+              </label>
+              <br />
+              <label>
+                Image:
+                <input
+                  type="text"
+                  value={selectedProduct.image}
+                  onChange={(e) => setSelectedProduct({ ...selectedProduct, image: e.target.value })}
+                  className="w-full p-2 rounded-md text-gray-900"
+                />
+              </label>
+              <br />
+              <button
+                className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full mt-4"
+                onClick={() => handleUpdate(selectedProduct._id)}
+              >
+                Update
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded-full mt-4"
+                onClick={() => setSelectedProduct(null)}
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

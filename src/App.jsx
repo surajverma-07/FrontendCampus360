@@ -38,6 +38,7 @@ function App() {
         <Route path="/allcareer" element={<AllCareers />} exact />
         <Route path="/mycareer" element={<MyCareers />} exact />
         <Route path="/allproducts" element={<AllProducts />} exact />
+        <Route path="/myproducts" element={<MyProducts />} exact />
 
       </Routes>
     </>
