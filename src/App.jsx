@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
@@ -9,11 +9,21 @@ import AllEvents from "./pages/AllEvent";
 import MyEvent from "./pages/MyEvent";
 import AllCareers from "./pages/AllCareers";
 import MyCareers from "./pages/MyCareers";
+import AllProducts from "./pages/AllProducts";
+import MyProducts from "./pages/MyProducts";
 import { userState } from "./context/UserContext";
 
 function App() {
   const navigate = useNavigate();
   const { isAuthorized } = userState();
+
+  // Effect to redirect unauthorized users to the login page
+  useEffect(() => {
+    if (!isAuthorized) {
+      navigate("/login");
+    }
+  }, [isAuthorized, navigate]); // Add isAuthorized and navigate to dependencies
+
   return (
     <>
       <Routes>
@@ -21,20 +31,14 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} exact />
         <Route path="/login" element={<LoginPage />} exact />
 
-        {isAuthorized ? (
-          <>
-            <Route path="/allpost" element={<AllPost />} exact />
-            <Route path="/mypost" element={<MyPost />} exact />
-            <Route path="/allevent" element={<AllEvents />} exact />
-            <Route path="/myevent" element={<MyEvent />} exact />
-            <Route path="/allcareer" element={<AllCareers />} exact />
-            <Route path="/mycareer" element={<MyCareers />} exact />
-          </>
-        ) : (
-          <>
-            <Route path="*" element={navigate("/login")} exact />
-          </>
-        )}
+        <Route path="/allpost" element={<AllPost />} exact />
+        <Route path="/mypost" element={<MyPost />} exact />
+        <Route path="/allevent" element={<AllEvents />} exact />
+        <Route path="/myevent" element={<MyEvent />} exact />
+        <Route path="/allcareer" element={<AllCareers />} exact />
+        <Route path="/mycareer" element={<MyCareers />} exact />
+        <Route path="/allproduct" element={<AllProducts />} exact />
+        <Route path="/myproduct" element={<MyProducts />} exact />
       </Routes>
     </>
   );

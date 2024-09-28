@@ -15,6 +15,7 @@ function LoginAdmin() {
         email,
         password,
     }, { withCredentials: true });
+    console.log("Response Login Admin : : ",response)
     
     } catch (error) {
       setError(error);

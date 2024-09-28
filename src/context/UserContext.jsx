@@ -1,13 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [userData, setUserData] = useState({});
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -18,6 +17,7 @@ const UserProvider = ({ children }) => {
         );
 
         if (response.data.success) {
+          console.log(response)
           setIsAuthorized(true);
           setUserData(response.data);
         }
@@ -36,6 +36,8 @@ const UserProvider = ({ children }) => {
         setUserData,
         isAuthorized,
         setIsAuthorized,
+        isAdmin,
+        setIsAdmin,
       }}
     >
       {children}
@@ -43,7 +45,6 @@ const UserProvider = ({ children }) => {
   );
 };
 
-// Custom hook to use UserContext
 export const userState = () => useContext(UserContext);
 
 export default UserProvider;

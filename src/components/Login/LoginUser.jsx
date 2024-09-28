@@ -28,9 +28,11 @@ function LoginPage() {
         },
         { withCredentials: true }
       );
+      console.log("Response Login user : : ",response)
       if(response.data.statusCode === 200){
         navigateTo('/allpost')
         setisAuthorized(true)
+        console.log("User log in successfully ")
       }else{
         navigateTo('/login')
         setisAuthorized(false)
