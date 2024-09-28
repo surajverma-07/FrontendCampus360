@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import { Box, Container, Grid, Typography, Button, TextField, Card, CardContent, CardMedia, CardActions, IconButton, Avatar, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 
 function MyProducts() {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -12,7 +15,7 @@ function MyProducts() {
   const fetchProducts = async () => {
     try {
       const response = await axios.get('http://localhost:3000/api/v1/campus-store/products/my', { withCredentials: true });
-      setProducts(response.data.data.products);
+      setProducts(response.data.data.products.sort((a, b) => a.name.localeCompare(b.name)));
       console.log(response.data)
     } catch (error) {
       console.error('Failed to fetch products!');
@@ -24,6 +27,7 @@ function MyProducts() {
       const response = await axios.patch(`http://localhost:3000/api/v1/campus-store/products/update/${id}`, selectedProduct, { withCredentials: true });
       toast.success('Product updated successfully!');
       fetchProducts();
+      setOpen(false); // Close the update window after updating
     } catch (error) {
       toast.error('Failed to update product!');
     }
@@ -39,112 +43,118 @@ function MyProducts() {
     }
   };
 
+  const handleClickOpen = (product) => {
+    setSelectedProduct(product);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-center mb-8">My Products</h1>
-      <div className="flex flex-wrap justify-center xl:gap-x-20 mb-8">
+    <Container maxWidth="lg" sx={{ mt: 10, p: 4, backgroundColor: 'white', borderRadius: 2, boxShadow: 2 }}>
+      <Typography variant="h4" sx={{ mb: 2 }}>
+        My Products
+      </Typography>
+      <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
         {products.map((product) => (
-          <div key={product._id} className="bg-gray-100 rounded-lg shadow-md overflow-hidden w-full md:w-1/2 lg:w-1/3 xl:w-1/4 mb-4 text-black">
-            <div className="p-4">
-              <div className="bg-white rounded-lg aspect-square flex items-center justify-center mb-4 overflow-hidden">
-                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-              </div>
-              <h2 className="text-2xl font-bold mb-4">{product.name}</h2>
-              <p className="text-sm mb-4">Category: {product.category}</p>
-              <p className="text-sm mb-4">Price: ₹{product.price}</p>
-              <p className="text-sm mb-4">Description: {product.description}</p>
-              <p className="text-sm mb-4">Seller: {product.sellerId}</p>
-              {product.college && (
-                <p className="text-sm mb-4">College: {product.college}</p>
-              )}
-              <button
-                className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full mt-4"
-                onClick={() => setSelectedProduct(product)}
-              >
-                Edit
-              </button>
-              <button
-                className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded-full mt-4"
-                onClick={() => handleDelete(product._id)}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
+          <Grid item xs={12} md={6} lg={4} xl={3} key={product._id}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent>
+                <Grid container spacing={2} sx={{ alignItems: 'center' }}>
+                  <Grid item>
+                    <CardMedia
+                      component="img"
+                      height="100"
+                      width="100"
+                      image={product.image}
+                      alt={product.name}
+                      // sx={{ objectFit: 'cover' }}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="body2" color="text.secondary">
+                      {product.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Category: {product.category}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Price: ₹{product.price}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Description: {product.description}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Seller: {product.sellerId}
+                    </Typography>
+                    {product.college && (
+                      <Typography variant="body2" color="text.secondary">
+                        College: {product.college}
+                      </Typography>
+                    )}
+                  </Grid>
+                </Grid>
+              </CardContent>
+              <CardActions sx={{ justifyContent: 'space-between' }}>
+                <Grid container spacing={2}>
+                  <Grid item>
+                    <Button variant="contained" color="primary" size="small" onClick={() => handleClickOpen(product)}>Update</Button>
+                  </Grid>
+                  <Grid item>
+                    <Button variant="contained" color="error" size="small" onClick={() => handleDelete(product._id)}>Delete</Button>
+                  </Grid>
+                </Grid>
+              </CardActions>
+            </Card>
+          </Grid>
         ))}
-      </div>
-      {selectedProduct && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-90 flex justify-center items-center">
-          <div className="bg-gray-200 p-4 rounded-lg w-1/2">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900">Update Product</h2>
-            <form>
-              <label>
-                Name:
-                <input
-                  type="text"
-                  value={selectedProduct.name}
-                  onChange={(e) => setSelectedProduct({ ...selectedProduct, name: e.target.value })}
-                  className="w-full p-2 rounded-md text-gray-900"
-                />
-              </label>
-              <br />
-              <label>
-                Description:
-                <input
-                  type="text"
-                  value={selectedProduct.description}
-                  onChange={(e) => setSelectedProduct({ ...selectedProduct, description: e.target.value })}
-                  className="w-full p-2 rounded-md text-gray-900"
-                />
-              </label>
-              <br />
-              <label>
-                Price:
-                <input
-                  type="number"
-                  value={selectedProduct.price}
-                  onChange={(e) => setSelectedProduct({ ...selectedProduct, price: e.target.value })}
-                  className="w-full p-2 rounded-md text-gray-900"
-                />
-              </label>
-              <br />
-              <label>
-                Category:
-                <input
-                  type="text"
-                  value={selectedProduct.category}
- onChange={(e) => setSelectedProduct({ ...selectedProduct, category: e.target.value })}
-                  className="w-full p-2 rounded-md text-gray-900"
-                />
-              </label>
-              <br />
-              <label>
-                Image:
-                <input
-                  type="text"
-                  value={selectedProduct.image}
-                  onChange={(e) => setSelectedProduct({ ...selectedProduct, image: e.target.value })}
-                  className="w-full p-2 rounded-md text-gray-900"
-                />
-              </label>
-              <br />
-              <button
-                className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full mt-4"
-                onClick={() => handleUpdate(selectedProduct._id)}
-              >
-                Update
-              </button>
-              <button
-                className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded-full mt-4"
-                onClick={() => setSelectedProduct(null)}
-              >
-                Cancel
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
+      </Grid>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Update Product
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <TextField
+              type="text"
+              value={selectedProduct ? selectedProduct.name : ""}
+              onChange={(e) => setSelectedProduct ({ ...selectedProduct, name: e.target.value })}
+              placeholder="Name"
+              fullWidth
+            />
+            <TextField
+              type="text"
+              value={selectedProduct ? selectedProduct.description : ""}
+              onChange={(e) => setSelectedProduct({ ...selectedProduct, description: e.target.value })}
+              placeholder="Description"
+              fullWidth
+            />
+            <TextField
+              type="number"
+              value={selectedProduct ? selectedProduct.price : ""}
+              onChange={(e) => setSelectedProduct({ ...selectedProduct, price: e.target.value })}
+              placeholder="Price"
+              fullWidth
+            />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => handleUpdate(selectedProduct._id)} color="primary" autoFocus>
+            Update
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
   );
 }
 

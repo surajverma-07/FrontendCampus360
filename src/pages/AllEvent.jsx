@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { Box, Container, Grid, Typography, Button, TextField, Card, CardContent, CardMedia, CardActions, IconButton, Avatar, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 function AllEvent() {
@@ -20,39 +21,68 @@ function AllEvent() {
   };
 
   return (
-    <div className="container mx-auto px-8 md:px-4 pt-32 md:pt-6 bg-[#030717] text-white">
-      <h1 className="text-3xl font-bold text-center mb-8">All Events</h1>
-      <div className="flex flex-wrap justify-center xl:gap-x-20 mb-8">
+    <Container maxWidth="lg" sx={{ mt: 10, p: 4, backgroundColor: 'white', borderRadius: 2, boxShadow: 2 }}>
+      <Typography variant="h4" sx={{ mb: 2 }}>
+        All Events
+      </Typography>
+      <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
         {events.map((event) => (
-          <div key={event._id} className="bg-gray-100 rounded-lg shadow-md overflow-hidden w-full md:w-1/2 lg:w-1/3 xl:w-1/4 mb-4 text-black">
-            <div className="p-4">
-              <div className="bg-white rounded-lg aspect-square flex items-center justify-center mb-4 overflow-hidden">
-                {event.poster ? (
-                  <img src={event.poster} alt={event.title} className="w-full h-full object-cover" />
-                ) : (
-                  <h2 className="text-3xl font-bold text-center">Event</h2>
+          <Grid item xs={12} md={6} lg={4} xl={3} key={event._id}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent sx={{ height: '80%' }}>
+                <Grid container spacing={2} sx={{ alignItems: 'center', height: '100%' }}>
+                  <Grid item xs={12}>
+                    {event.poster ? (
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        width="100%"
+                        image={event.poster}
+                        alt={event.title}
+                        sx={{ objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <Typography variant="h4" sx={{ textAlign: 'center' }}>
+                        Event
+                      </Typography>
+                    )}
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body2" color="text.secondary">
+                      {event.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {event.description}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Location: {event.location}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Organizer: {event.organizer}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Date: {new Date(event.date).toLocaleString()}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </CardContent>
+              <CardActions sx={{ justifyContent: 'center' }}>
+                {event.applyLink && (
+                  <a href={event.applyLink} target="_blank" rel="noopener noreferrer">
+                    <Button variant="contained" color="primary">
+                      Apply Now
+                    </Button>
+                  </a>
                 )}
-              </div>
-              <h2 className="text-2xl font-bold mb-4">{event.title}</h2>
-              <p className="text-sm mb-4">{event.description}</p>
-              <p className="text-sm mb-4">Location: {event.location}</p>
-              <p className="text-sm mb-4">Organizer: {event.organizer}</p>
-              <p className="text-sm mb-4">Date: {new Date(event.date).toLocaleString()}</p>
-              {event.applyLink && (
-                <a href={event.applyLink} target="_blank" rel="noopener noreferrer">
-                  <button className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2  px-4 rounded-full mt-4">
-                    Apply Now
-                  </button>
-                </a>
-              )}
-              {/* <button className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full mt-4">
-                <Link to={`/event/${event._id}`}>Details</Link>
-              </button> */}
-            </div>
-          </div>
+                {/* <Button variant="contained" color="primary">
+                  <Link to={`/event/${event._id}`}>View Details</Link>
+                </Button> */}
+              </CardActions>
+            </Card>
+          </Grid>
         ))}
-      </div>
-    </div>
+      </Grid>
+    </Container>
   );
 }
 
