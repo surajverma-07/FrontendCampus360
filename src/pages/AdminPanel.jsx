@@ -45,15 +45,8 @@ export default function AdminPanel() {
   const [users, setUsers] = useState([]);
   const [applications, setApplications] = useState([]);
   const [reportedUsers, setReportedUsers] = useState([]);
-  const [profileForm, setProfileForm] = useState({
-    name: '',
-    email: '',
-    college: '',
-  });
-  const [passwordForm, setPasswordForm] = useState({
-    oldPassword: '',
-    newPassword: '',
-  });
+  const [profileForm, setProfileForm] = useState({ name: '', email: '', college: '' });
+  const [passwordForm, setPasswordForm] = useState({ oldPassword: '', newPassword: '' });
 
   // Fetch data when component mounts
   useEffect(() => {
@@ -63,24 +56,15 @@ export default function AdminPanel() {
     fetchReportedUsers();
   }, []);
 
-  // Function to handle tab changes
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
+  // Handle tab changes
+  const handleTabChange = (event, newValue) => setTabValue(newValue);
 
   // Fetch Admin Profile
   const fetchProfile = async () => {
     try {
-      const response = await axios.get(
-        'http://localhost:3000/api/v1/campus-connect/admin/profile/',
-        { withCredentials: true }
-      );
-      setProfile(response.data.data.admin);
-      setProfileForm({
-        name: response.data.data.admin.name,
-        email: response.data.data.admin.email,
-        college: response.data.data.admin.college,
-      });
+      const { data } = await axios.get('http://localhost:3000/api/v1/campus-connect/admin/profile/', { withCredentials: true });
+      setProfile(data.data.admin);
+      setProfileForm(data.data.admin);
     } catch (error) {
       console.error('Error fetching profile:', error);
     }
@@ -89,11 +73,8 @@ export default function AdminPanel() {
   // Fetch all users
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(
-        'http://localhost:3000/api/v1/campus-connect/admin/users/',
-        { withCredentials: true }
-      );
-      setUsers(response.data.data.users);
+      const { data } = await axios.get('http://localhost:3000/api/v1/campus-connect/admin/users/', { withCredentials: true });
+      setUsers(data.data.users);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -102,11 +83,8 @@ export default function AdminPanel() {
   // Fetch event organizer applications
   const fetchEventOrganizerApplications = async () => {
     try {
-      const response = await axios.get(
-        'http://localhost:3000/api/v1/campus-connect/admin/applications/',
-        { withCredentials: true }
-      );
-      setApplications(response.data.data.applications);
+      const { data } = await axios.get('http://localhost:3000/api/v1/campus-connect/admin/applications/', { withCredentials: true });
+      setApplications(data.data.applications);
     } catch (error) {
       console.error('Error fetching applications:', error);
     }
@@ -115,37 +93,24 @@ export default function AdminPanel() {
   // Fetch reported users
   const fetchReportedUsers = async () => {
     try {
-      const response = await axios.get(
-        'http://localhost:3000/api/v1/campus-connect/admin/reported-users/',
-        { withCredentials: true }
-      );
-      setReportedUsers(response.data.data.reportedUsers);
+      const { data } = await axios.get('http://localhost:3000/api/v1/campus-connect/admin/reported-users/', { withCredentials: true });
+      setReportedUsers(data.data.reportedUsers);
     } catch (error) {
       console.error('Error fetching reported users:', error);
     }
   };
 
-  // Handle profile form change
-  const handleProfileFormChange = (e) => {
-    setProfileForm({ ...profileForm, [e.target.name]: e.target.value });
-  };
-
-  // Handle password form change
-  const handlePasswordFormChange = (e) => {
-    setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
-  };
+  // Handle form changes
+  const handleProfileFormChange = (e) => setProfileForm({ ...profileForm, [e.target.name]: e.target.value });
+  const handlePasswordFormChange = (e) => setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
 
   // Update admin profile
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch(
-        'http://localhost:3000/api/v1/campus-connect/admin/update-details/',
-        profileForm,
-        { withCredentials: true }
-      );
+      await axios.patch('http://localhost:3000/api/v1/campus-connect/admin/update-details/', profileForm, { withCredentials: true });
       alert('Profile updated successfully');
-      fetchProfile(); // Refresh profile data
+      fetchProfile();
     } catch (error) {
       console.error('Error updating profile:', error);
       alert('Failed to update profile');
@@ -156,11 +121,7 @@ export default function AdminPanel() {
   const handleChangePassword = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch(
-        'http://localhost:3000/api/v1/campus-connect/admin/change-password/',
-        passwordForm,
-        { withCredentials: true }
-      );
+      await axios.patch('http://localhost:3000/api/v1/campus-connect/admin/change-password/', passwordForm, { withCredentials: true });
       alert('Password changed successfully');
       setPasswordForm({ oldPassword: '', newPassword: '' });
     } catch (error) {
@@ -169,67 +130,27 @@ export default function AdminPanel() {
     }
   };
 
-  // Block user
-  const handleBlockUser = async (userId) => {
+  // Block/Unblock user
+  const handleUserBlockToggle = async (userId, action) => {
     try {
-      await axios.patch(
-        `http://localhost:3000/api/v1/campus-connect/admin/block-user/${userId}`,
-        {},
-        { withCredentials: true }
-      );
-      alert('User blocked successfully');
-      fetchUsers(); // Refresh user list
+      await axios.patch(`http://localhost:3000/api/v1/campus-connect/admin/${action}-user/${userId}`, {}, { withCredentials: true });
+      alert(`User ${action === 'block' ? 'blocked' : 'unblocked'} successfully`);
+      fetchUsers();
     } catch (error) {
-      console.error('Error blocking user:', error);
-      alert('Failed to block user');
+      console.error(`Error ${action === 'block' ? 'blocking' : 'unblocking'} user:`, error);
+      alert(`Failed to ${action === 'block' ? 'block' : 'unblock'} user`);
     }
   };
 
-  // Unblock user
-  const handleUnblockUser = async (userId) => {
+  // Approve/Reject application
+  const handleApplicationAction = async (userId, action) => {
     try {
-      await axios.patch(
-        `http://localhost:3000/api/v1/campus-connect/admin/unblock-user/${userId}`,
-        {},
-        { withCredentials: true }
-      );
-      alert('User unblocked successfully');
-      fetchUsers(); // Refresh user list
+      await axios.patch(`http://localhost:3000/api/v1/campus-connect/admin/${action}-application/${userId}`, {}, { withCredentials: true });
+      alert(`Application ${action === 'approve' ? 'approved' : 'rejected'} successfully`);
+      fetchEventOrganizerApplications();
     } catch (error) {
-      console.error('Error unblocking user:', error);
-      alert('Failed to unblock user');
-    }
-  };
-
-  // Approve application
-  const handleApproveApplication = async (userId) => {
-    try {
-      await axios.patch(
-        `http://localhost:3000/api/v1/campus-connect/admin/approve-application/${userId}`,
-        {},
-        { withCredentials: true }
-      );
-      alert('Application approved successfully');
-      fetchEventOrganizerApplications(); // Refresh applications
-    } catch (error) {
-      console.error('Error approving application:', error);
-      alert('Failed to approve application');
-    }
-  };
-
-  // Reject application
-  const handleRejectApplication = async (userId) => {
-    try {
-      await axios.patch(
-        `http://localhost:3000/api/v1/campus-connect/admin/reject-application/${userId}`,
-        {},
-        { withCredentials: true }
-      );
-      alert('Application rejected successfully');
-      fetchEventOrganizerApplications(); // Refresh applications
-    } catch (error) {
-      console.error('Error rejecting application:', error);
-      alert('Failed to reject application');
+      console.error(`Error ${action === 'approve' ? 'approving' : 'rejecting'} application:`, error);
+      alert(`Failed to ${action === 'approve' ? 'approve' : 'reject'} application`);
     }
   };
 
@@ -340,23 +261,13 @@ export default function AdminPanel() {
                     <TableCell>{user.college}</TableCell>
                     <TableCell>{user.isBlocked ? 'Yes' : 'No'}</TableCell>
                     <TableCell>
-                      {user.isBlocked ? (
-                        <Button
-                          onClick={() => handleUnblockUser(user._id)}
-                          variant="contained"
-                          color="primary"
-                        >
-                          Unblock
-                        </Button>
-                      ) : (
-                        <Button
-                          onClick={() => handleBlockUser(user._id)}
-                          variant="contained"
-                          color="secondary"
-                        >
-                          Block
-                        </Button>
-                      )}
+                      <Button
+                        onClick={() => handleUserBlockToggle(user._id, user.isBlocked ? 'unblock' : 'block')}
+                        variant="contained"
+                        color={user.isBlocked ? 'success' : 'error'}
+                      >
+                        {user.isBlocked ? 'Unblock' : 'Block'}
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -371,32 +282,23 @@ export default function AdminPanel() {
             <Table>
               <TableHead>
                 <TableRow>
+                  <TableCell>User ID</TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Email</TableCell>
-                  <TableCell>College</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {applications.map((application) => (
-                  <TableRow key={application._id}>
-                    <TableCell>{application.name}</TableCell>
-                    <TableCell>{application.email}</TableCell>
-                    <TableCell>{application.college}</TableCell>
+                {applications.map((app) => (
+                  <TableRow key={app.userId}>
+                    <TableCell>{app.userId}</TableCell>
+                    <TableCell>{app.name}</TableCell>
+                    <TableCell>{app.email}</TableCell>
                     <TableCell>
-                      <Button
-                        onClick={() => handleApproveApplication(application._id)}
-                        variant="contained"
-                        color="primary"
-                        sx={{ mr: 1 }}
-                      >
+                      <Button onClick={() => handleApplicationAction(app.userId, 'approve')} variant="contained" color="success">
                         Approve
                       </Button>
-                      <Button
-                        onClick={() => handleRejectApplication(application._id)}
-                        variant="contained"
-                        color="secondary"
-                      >
+                      <Button onClick={() => handleApplicationAction(app.userId, 'reject')} variant="contained" color="error">
                         Reject
                       </Button>
                     </TableCell>
@@ -415,31 +317,15 @@ export default function AdminPanel() {
                 <TableRow>
                   <TableCell>Name</TableCell>
                   <TableCell>Email</TableCell>
-                  <TableCell>Report Count</TableCell>
-                  <TableCell>College</TableCell>
-                  <TableCell>Blocked</TableCell>
-                  <TableCell>Actions</TableCell>
+                  <TableCell>Reports</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {reportedUsers.map((user) => (
-                  <TableRow key={user._id}>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.reportCount}</TableCell>
-                    <TableCell>{user.college}</TableCell>
-                    <TableCell>{user.isBlocked ? 'Yes' : 'No'}</TableCell>
-                    <TableCell>
-                      {!user.isBlocked && (
-                        <Button
-                          onClick={() => handleBlockUser(user._id)}
-                          variant="contained"
-                          color="secondary"
-                        >
-                          Block
-                        </Button>
-                      )}
-                    </TableCell>
+                {reportedUsers.map((report) => (
+                  <TableRow key={report.userId}>
+                    <TableCell>{report.name}</TableCell>
+                    <TableCell>{report.email}</TableCell>
+                    <TableCell>{report.reportCount}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

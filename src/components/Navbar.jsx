@@ -123,28 +123,31 @@ const Navbar = () => {
                       sx={{ width: 50, height: 50 }}
                       onClick={onOpen}
                     />
-                    <Modal
-                      closeOnOverlayClick={false}
-                      isOpen={isOpen}
-                      onClose={onClose}
-                    >
-                      <ModalOverlay />
-                      <ModalContent>
-                        <ModalHeader>Create your account</ModalHeader>
-                        <ModalCloseButton />
-                        <ModalBody>
-                          Lorem ipsum, dolor sit amet consectetur adipisicing
-                          elit. Voluptatibus, aliquid!
-                        </ModalBody>
-
-                        <ModalFooter>
-                          <Button colorScheme="blue" mr={3}>
-                            Save
-                          </Button>
-                          <Button onClick={onClose}>Cancel</Button>
-                        </ModalFooter>
-                      </ModalContent>
-                    </Modal>
+                    <div>
+                      <Modal
+                        closeOnOverlayClick={false}
+                        isOpen={isOpen}
+                        className="min-w-96 min-h-96 p-4 "
+                        onClose={onClose}
+                        isCentered // This will center the modal on the screen
+                      >
+                        <ModalOverlay />
+                        <ModalContent>
+                          <ModalHeader>Create your account</ModalHeader>
+                          <ModalCloseButton />
+                          <ModalBody pb={6}>
+                            Lorem ipsum, dolor sit amet consectetur adipisicing
+                            elit. Voluptatibus, aliquid!
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button colorScheme="blue" mr={3}>
+                              Save
+                            </Button>
+                            <Button onClick={onClose}>Cancel</Button>
+                          </ModalFooter>
+                        </ModalContent>
+                      </Modal>
+                    </div>
                   </>
                 ) : (
                   <>
@@ -227,28 +230,30 @@ const Navbar = () => {
                 sx={{ width: 50, height: 50 }}
                 onClick={onOpen}
               />
-              <Modal
-                closeOnOverlayClick={false}
-                isOpen={isOpen}
-                onClose={onClose}
-                isCentered // This will center the modal on the screen
-              >
-                <ModalOverlay />
-                <ModalContent>
-                  <ModalHeader>Create your account</ModalHeader>
-                  <ModalCloseButton />
-                  <ModalBody pb={6}>
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                    Voluptatibus, aliquid!
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button colorScheme="blue" mr={3}>
-                      Save
-                    </Button>
-                    <Button onClick={onClose}>Cancel</Button>
-                  </ModalFooter>
-                </ModalContent>
-              </Modal>
+                <Modal
+                  className="min-w-96 min-h-96 p-4 "
+                  closeOnOverlayClick={false}
+                  isOpen={isOpen}
+                  onClose={onClose}
+                  isCentered // This will center the modal on the screen
+                >
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Create your account</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody pb={6}>
+                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                      Voluptatibus, aliquid!
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button colorScheme="blue" mr={3}>
+                        Save
+                      </Button>
+                      <Button onClick={onClose}>Cancel</Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
+              
             </>
           ) : (
             ""
