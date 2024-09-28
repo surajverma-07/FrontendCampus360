@@ -8,6 +8,7 @@ function MyPost() {
   const [posts, setPosts] = useState([]);
   const [visibleComments, setVisibleComments] = useState({});
   const [newComments, setNewComments] = useState({});
+  const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
     fetchPosts();
@@ -18,7 +19,6 @@ function MyPost() {
       const response = await axios.get('http://localhost:3000/api/v1/campus-connect/post/my', { withCredentials: true });
       setPosts(response.data.data.posts);
       console.log(response.data.data.posts);
-      
     } catch (error) {
       toast.error('Failed to fetch posts!');
     }
@@ -54,6 +54,29 @@ function MyPost() {
     }
   };
 
+  const handleUpdate = async (id) => {
+    try {
+      const response = await axios.patch(`http://localhost:3000/api/v1/campus-connect/post/update/${id}`, 
+        { content: selectedPost.content }, 
+        { withCredentials: true }
+      );
+      toast.success('Post updated successfully!');
+      fetchPosts();
+    } catch (error) {
+      toast.error('Failed to update post!');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/v1/campus-connect/post/delete/${id}`, { withCredentials: true });
+      toast.success('Post deleted successfully!');
+      fetchPosts();
+    } catch (error) {
+      toast.error('Failed to delete post!');
+    }
+  };
+
   return (
     <div className="container mx-auto px-8 md:px-4 pt-32 md:pt-6 bg-[#030717] text-white">
       <h1 className="text-3xl font-bold text-center mb-8">My Posts</h1>
@@ -81,7 +104,7 @@ function MyPost() {
               <div className="flex justify-between text-gray-500 mb-4">
                 <button className="flex items-center" onClick={() => toggleComments(post._id)}>
                   <MessageSquare size={20} />
-                  <span className="ml-2 text-sm">Comments ({post.comments.length})</span>
+                  <span className="ml-2 text-sm">Comments ({post.comments .length})</span>
                 </button>
                 <button className="flex items-center" onClick={() => handleLike(post._id)}>
                   <Heart 
@@ -90,6 +113,18 @@ function MyPost() {
                     color={post.isLiked ? "red" : "currentColor"}
                   />
                   <span className="ml-2 text-sm">Like ({post.likeCount})</span>
+                </button>
+                <button className="flex items-center" onClick={() => setSelectedPost(post)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75-.75h.665a.75.75 0 01.75.75v16.69a.75.75 0 01-.75.75h-.665a.75.75 0 01-.75-.75v-16.69zm-3.75 12.69a.75.75 0 00-1.5 0v-3.38a.75.75 0 00-1.5 0v3.38a.75.75 0 001.5 0zm3.75 0a.75.75 0 00-1.5 0v-3.38a.75.75 0 00-1.5 0v3.38a.75.75 0 001.5 0z" />
+                  </svg>
+                  <span className="ml-2 text-sm">Edit</span>
+                </button>
+                <button className="flex items-center" onClick={() => handleDelete(post._id)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75-.75h.665a.75.75 0 01.75.75v16.69a.75.75 0 01-.75.75h-.665a.75.75 0 01-.75-.75v-16.69zm-3.75 12.69a.75.75 0 00-1.5 0v-3.38a.75.75 0 00-1.5 0v3.38a.75.75 0 001.5 0zm3.75 0a.75.75 0 00-1.5 0v-3.38a.75.75 0 00-1.5 0v3.38a.75.75 0 001.5 0z" />
+                  </svg>
+                  <span className="ml-2 text-sm">Delete</span>
                 </button>
               </div>
               {visibleComments[post._id] && (
@@ -117,7 +152,36 @@ function MyPost() {
                   </div>
                 </div>
               )}
-             
+              {selectedPost && selectedPost._id === post._id && (
+                <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-90 flex justify-center items-center">
+                  <div className="bg-gray-200 p-4 rounded-lg w-1/2">
+                    <h2 className="text-2xl font-bold mb-4">Update Post</h2>
+                    <form>
+                      <label>
+                        Content:
+                        <textarea
+                          value={selectedPost.content}
+                          onChange={(e) => setSelectedPost({ ...selectedPost, content: e.target.value })}
+                          className="w-full p-2 rounded-md"
+                        />
+                      </label>
+                      <br />
+                      <button
+                        className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full mt-4"
+                        onClick={() => handleUpdate(selectedPost._id)}
+                      >
+                        Update
+                      </button>
+                      <button
+                        className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded-full mt-4"
+                        onClick={() => setSelectedPost(null)}
+                      >
+                        Cancel
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )) : "No Post Available"}

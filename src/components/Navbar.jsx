@@ -19,20 +19,19 @@ import { userState } from "../context/UserContext";
 import axios from "axios";
 
 const Navbar = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const { userData, setUserData, isAuthorized, setisAuthorized } = userState();
   const [open, setOpen] = React.useState(false);
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
-
   const handleLogout = async () => {
     const response = await axios.get(
       "http://localhost:3000/api/v1/campus-connect/user/logout",
       { withCredentials: true }
     );
-    navigate('/')
+    navigate("/");
   };
 
   return (
@@ -47,7 +46,11 @@ const Navbar = () => {
             <AddIcon />
           </Button>
           <Drawer open={open} onClose={toggleDrawer(false)}>
-            <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+            <Box
+              sx={{ width: 250 }}
+              role="presentation"
+              onClick={toggleDrawer(false)}
+            >
               <List>
                 <Link to={"/"}>
                   <ListItem disablePadding>
@@ -73,7 +76,7 @@ const Navbar = () => {
                     </ListItem>
                   </Link>
                 ) : (
-                  <ListItem  disablePadding onClick={handleLogout}>
+                  <ListItem disablePadding onClick={handleLogout}>
                     <ListItemButton>
                       <ListItemIcon>
                         <LogoutIcon />
@@ -101,23 +104,30 @@ const Navbar = () => {
         </div>
 
         <div className="md:mr-5 hidden text-xl mr-1 md:flex">
-          
+          {isAuthorized ? (
+            ""
+          ) : (
+            <>
               <div className="mx-4 rounded-lg p-2">
                 <Link to={"/login"}>
                   <Button variant="outlined">Login</Button>
                 </Link>
               </div>
-
               <div className="mx-4 rounded-lg p-2">
-
                 <Link to={"/signup"}>
                   <Button variant="outlined">Sign Up</Button>
                 </Link>
               </div>
-        
+            </>
+          )}
+          {isAuthorized ? (
             <Button variant="outlined" onClick={handleLogout}>
               Logout
             </Button>
+          ) : (
+            ""
+          )}
+
           <Avatar
             alt="User Avatar"
             className="mx-6"

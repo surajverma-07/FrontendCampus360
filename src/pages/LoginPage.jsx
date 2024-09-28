@@ -51,10 +51,10 @@ export default function LoginPage() {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <LoginUser/>
+        <LoginUser />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-       <LoginAdmin/>
+        <LoginAdmin />
       </CustomTabPanel>
     </Box>
   );

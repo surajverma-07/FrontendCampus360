@@ -1,10 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
@@ -19,23 +20,40 @@ const UserProvider = ({ children }) => {
         if (response.data.success) {
           setIsAuthorized(true);
           setUserData(response.data);
-          return
-        }
+        } else {
+          try {
             const adminResponse = await axios.post(
               "http://localhost:3000/api/v1/campus-connect/admin/profile/",
               { withCredentials: true }
             );
+
             if (adminResponse.data.success) {
               setIsAdmin(true);
-              setUserData(adminResponse.data)
+              setUserData(adminResponse.data);
+              setIsAuthorized(true); // Set authorized if admin profile fetched
+            } else {
+              setIsAuthorized(false);
+              setIsAdmin(false);
             }
-         
+          } catch (error) {
+            console.log(error);
+            setIsAuthorized(false);
+            setIsAdmin(false);
           }
-    
-  
+        }
+      } catch (error) {
+        console.log(error);
+        setIsAuthorized(false);
+        setIsAdmin(false);
+      }
+    };
 
     fetchUserData();
   }, []);
+
+  useEffect(() => {
+    console.log("isAuthorized updated: ", isAuthorized);
+  }, [isAuthorized]);
 
   return (
     <UserContext.Provider
