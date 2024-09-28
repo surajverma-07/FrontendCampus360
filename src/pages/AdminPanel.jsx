@@ -83,8 +83,10 @@ export default function AdminPanel() {
   // Fetch event organizer applications
   const fetchEventOrganizerApplications = async () => {
     try {
-      const { data } = await axios.get('http://localhost:3000/api/v1/campus-connect/admin/applications/', { withCredentials: true });
+      const { data } = await axios.get('http://localhost:3000/api/v1/campus-connect/admin/event-organizer/applications/', { withCredentials: true });
+      console.log(data)
       setApplications(data.data.applications);
+      console.log(applications)
     } catch (error) {
       console.error('Error fetching applications:', error);
     }
