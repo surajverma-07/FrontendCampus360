@@ -18,6 +18,11 @@ function AllProducts() {
     }
   };
 
+  const handleContact = (phone) => {
+    const url = `https://wa.me/${phone}`;
+    window.open(url, '_blank');
+  };
+
   return (
     <div>
       <h1 className="text-3xl font-bold text-center mb-8">All Products</h1>
@@ -33,7 +38,15 @@ function AllProducts() {
               <p className="text-sm mb-4">Price: ₹{product.price}</p>
               <p className="text-sm mb-4">Description: {product.description}</p>
               <p className="text-sm mb-4">Seller: {product.sellerId}</p>
-              <p className="text-sm mb-4">College: {product.college}</p>
+              {product.college && (
+                <p className="text-sm mb-4">College: {product.college}</p>
+              )}
+              <button
+                className="bg-green-500 hover:bg-green-300 text-white font-bold py-2 px-4 rounded-full mt-4"
+                onClick={() => handleContact(product.phone)}
+              >
+                Contact
+              </button>
             </div>
           </div>
         ))}

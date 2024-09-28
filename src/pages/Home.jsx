@@ -1,23 +1,108 @@
-import React from 'react'
-import Card from '../components/Card'
+import React from 'react';
+import { Box, Container, Grid, Typography, Button, SvgIcon, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import Card from '../components/Card';
 
 const Home = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
-    <div className='w-screen relative h-[38rem]  overflow-hidden flex md:flex-row flex-col justify-center '>
-      {/* left div  */}
+    <Box sx={{ overflow: 'hidden' }}>
+      <Container maxWidth="lg" sx={{ pt: 10, pb: 10 }}>
+        <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="h2" sx={{ fontSize: '2.5rem', fontWeight: 'bold' }}>
+                Elevate Your University Community Experience
+              </Typography>
+              <Typography variant="body1" sx={{ fontSize: '1.2rem', color: 'text.secondary' }}>
+                The specialised community solution for leading schools and universities
+              </Typography>
+              <Button variant="contained" sx={{ mt: 2, backgroundColor: '#ff7e7e', '&:hover': { backgroundColor: '#ff6b6b' } }}>
+                About us
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <img src="/Home-Image.svg" alt="Home Image" style={{ width: isMobile ? '100%' : '50%' }} />
+          </Grid>
+        </Grid>
+      </Container>
 
-      <div className='md:w-2/3 w-full md:h-full h-1/2 flex items-center flex-col justify-center  '>
+      <Container maxWidth="lg" sx={{ pt: 10, pb: 10 }}>
+        <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="h3" sx={{ fontSize: '2rem', fontWeight: 'bold', color: '#ff7e7e' }}>
+                Campus Connect
+              </Typography>
+              <Typography variant="body1" sx={{ fontSize: '1.2rem', color: 'text.secondary' }}>
+                Join a vibrant community where you can connect with peers, share events, and collaborate on projects effortlessly.
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <img src="/img1.png" alt="Students collaborating" style={{ width: isMobile ? '100%' : '50%' }} />
+          </Grid>
+        </Grid>
+      </Container>
 
-        <p className='text-6xl font-semibold font-serif kanit-semibold'>Elevate Your University <br></br> Community Experience</p>
-        <p >Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam esse unde adipisci, quos iste aliquam suscipit error quam consectetur expedita et quae autem? Eligendi expedita quam quod necessitatibus at esse.</p>
+      <Container maxWidth="lg" sx={{ pt: 10, pb: 10 }}>
+        <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="h3" sx={{ fontSize: '2rem', fontWeight: 'bold', color: '#ff7e7e' }}>
+                Campus Sells
+              </Typography>
+              <Typography variant="body1" sx={{ fontSize: '1.2rem', color: 'text.secondary' }}>
+                Click 📸  AND SELL
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <img src="/img7.jpeg" alt="People in park" style={{ width: isMobile ? '100%' : '50%' }} />
+          </Grid>
+        </Grid>
+      </Container>
 
-      </div>
+      <Container maxWidth="lg" sx={{ pt: 10, pb: 10 }}>
+        <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="h3" sx={{ fontSize: '2rem', fontWeight: 'bold', color: '#ff7e7e' }}>
+                Campus-360
+              </Typography>
+              <Typography variant="body1" sx={{ fontSize: '1.2rem', color: 'text.secondary' }}>
+                Your college here
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <img src="/img8.jpeg" alt="Woman in red coat" style={{ width: isMobile ? '100%' : '50%' }} />
+          </Grid>
+        </Grid>
+      </Container>
 
-      {/* right div  */}
-      <div className='md:w-1/3 w-full md:h-full h-1/2 flex items-center justify-end mr-6'>
-        <img className='w-96' src="/Home-Image.svg" alt="" /></div>
-    </div>
-  )
-}
+      <Container maxWidth="lg" sx={{ pt: 10, pb: 10 }}>
+        <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="h2" sx={{ fontSize: '2.5rem', fontWeight: 'bold' }}>
+                Ready to level up your community strategy?
+              </Typography>
+              <Button variant="contained" sx={{ mt: 2, backgroundColor: '#ff7e7e', '&:hover': { backgroundColor: '#ff6b6b' } }}>
+                Contact us
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <img src="/img9.jpeg" alt="Isometric community illustration" style={{ width: isMobile ? '100%' : '50%' }} />
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
+  );
+};
 
-export default Home
+export default Home;
