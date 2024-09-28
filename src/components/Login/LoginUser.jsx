@@ -5,9 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { userState } from '../../context/UserContext';
 
 function LoginUser() {
-  const { setUserData, setIsAuthorized } = userState(); // Ensure the correct setter function is used
-  const [loginType, setLoginType] = useState('rollnum');
-  const [loginValue, setLoginValue] = useState('');
+  const { setUserData, setIsAuthorized } = userState();
+  const [email, setEmail] = useState('');  // Change loginValue to email
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -20,7 +19,7 @@ function LoginUser() {
       const response = await axios.post(
         'http://localhost:3000/api/v1/campus-connect/user/login',
         {
-          [loginType]: loginValue,
+          email,  // Use email directly here
           password,
         },
         { withCredentials: true }
@@ -28,7 +27,7 @@ function LoginUser() {
 
       if (response.data.success) {
         setUserData(response.data);
-        setIsAuthorized(true); // Set authorization state
+        setIsAuthorized(true);
         navigateTo('/allpost');
         toast.success('Login Successfully');
       } else {
@@ -55,15 +54,15 @@ function LoginUser() {
         <div className="lg:w-1/2 p-4 lg:p-8">
           <h2 className="text-2xl font-bold mb-4">Student Login</h2>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="loginValue">
-              Roll Number or Email
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+              Email
             </label>
             <input
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              id="loginValue"
-              type="text"
-              value={loginValue}
-              onChange={(e) => setLoginValue(e.target.value)}
+              id="email"
+              type="email"  // Change type to email
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
