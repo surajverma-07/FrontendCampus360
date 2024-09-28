@@ -19,7 +19,8 @@ function App() {
 
   // Effect to redirect unauthorized users to the login page
   useEffect(() => {
-    if (!isAuthorized) {
+    if (isAuthorized === false) {
+      console.log("isAuthorized is false, redirecting to login");
       navigate("/login");
     }
   }, [isAuthorized, navigate]); // Add isAuthorized and navigate to dependencies
@@ -30,15 +31,12 @@ function App() {
         <Route path="/" element={<Home />} exact />
         <Route path="/signup" element={<SignUpPage />} exact />
         <Route path="/login" element={<LoginPage />} exact />
-
         <Route path="/allpost" element={<AllPost />} exact />
         <Route path="/mypost" element={<MyPost />} exact />
         <Route path="/allevent" element={<AllEvents />} exact />
         <Route path="/myevent" element={<MyEvent />} exact />
         <Route path="/allcareer" element={<AllCareers />} exact />
         <Route path="/mycareer" element={<MyCareers />} exact />
-        <Route path="/allproduct" element={<AllProducts />} exact />
-        <Route path="/myproduct" element={<MyProducts />} exact />
       </Routes>
     </>
   );

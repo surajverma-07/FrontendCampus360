@@ -1,6 +1,6 @@
 import React from "react";
 import Avatar from "@mui/material/Avatar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -19,6 +19,7 @@ import { userState } from "../context/UserContext";
 import axios from "axios";
 
 const Navbar = () => {
+  const navigate=useNavigate();
   const { userData, setUserData, isAuthorized, setisAuthorized } = userState();
   const [open, setOpen] = React.useState(false);
   const toggleDrawer = (newOpen) => () => {
@@ -26,11 +27,12 @@ const Navbar = () => {
   };
 
 
-  const handleLogout =async () => {
+  const handleLogout = async () => {
     const response = await axios.get(
       "http://localhost:3000/api/v1/campus-connect/user/logout",
       { withCredentials: true }
     );
+    navigate('/')
   };
 
   return (
@@ -40,7 +42,6 @@ const Navbar = () => {
           <Link to={"/"}>Campus360</Link>
         </div>
 
-        {/* For smaller screens */}
         <div className="md:hidden">
           <Button onClick={toggleDrawer(true)}>
             <AddIcon />
@@ -72,7 +73,6 @@ const Navbar = () => {
                     </ListItem>
                   </Link>
                 ) : (
-                  
                   <ListItem  disablePadding onClick={handleLogout}>
                     <ListItemButton>
                       <ListItemIcon>
@@ -101,28 +101,27 @@ const Navbar = () => {
         </div>
 
         <div className="md:mr-5 hidden text-xl mr-1 md:flex">
-          {!isAuthorized ? (
-            <>
+          
               <div className="mx-4 rounded-lg p-2">
                 <Link to={"/login"}>
                   <Button variant="outlined">Login</Button>
                 </Link>
               </div>
+
               <div className="mx-4 rounded-lg p-2">
+
                 <Link to={"/signup"}>
                   <Button variant="outlined">Sign Up</Button>
                 </Link>
               </div>
-            </>
-          ) : (
+        
             <Button variant="outlined" onClick={handleLogout}>
               Logout
             </Button>
-          )}
           <Avatar
             alt="User Avatar"
             className="mx-6"
-            src={userData?.avatarUrl || "/static/images/avatar/1.jpg"} // Use user's avatar if available
+            src={userData?.avatarUrl || "/static/images/avatar/1.jpg"}
             sx={{ width: 50, height: 50 }}
           />
         </div>
