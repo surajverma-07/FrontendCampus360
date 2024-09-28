@@ -6,23 +6,38 @@ export const UserContext = createContext();
 const UserProvider = ({ children }) => {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/v1/campus-connect/user/current-user",
+          "http://localhost:3000/api/v1/campus-connect/user/current-user/",
           { withCredentials: true }
         );
 
         if (response.data.success) {
           setIsAuthorized(true);
           setUserData(response.data);
+
+          try {
+            const adminResponse = await axios.post(
+              "http://localhost:3000/api/v1/campus-connect/admin/profile/",
+              { withCredentials: true }
+            );
+            if (adminResponse.data.success) {
+              setIsAdmin(true);
+              setUserData(adminResponse.data)
+            }
+          } catch (adminError) {
+            setIsAdmin(false);
+          }
         }
       } catch (error) {
         console.log(error);
+        setIsAuthorized(false);
+        setIsAdmin(false);
       }
     };
 
@@ -36,6 +51,8 @@ const UserProvider = ({ children }) => {
         setUserData,
         isAuthorized,
         setIsAuthorized,
+        isAdmin,
+        setIsAdmin,
       }}
     >
       {children}
@@ -43,7 +60,6 @@ const UserProvider = ({ children }) => {
   );
 };
 
-// Custom hook to use UserContext
 export const userState = () => useContext(UserContext);
 
 export default UserProvider;

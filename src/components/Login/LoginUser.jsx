@@ -13,9 +13,7 @@ function LoginPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigateTo = useNavigate();
-  if(isAuthorized){
-    navigateTo('/allpost')
-  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -28,7 +26,7 @@ function LoginPage() {
         },
         { withCredentials: true }
       );
-      if(response.data.statusCode === 200){
+      if(response.data.success){
         navigateTo('/allpost')
         setisAuthorized(true)
       }else{
