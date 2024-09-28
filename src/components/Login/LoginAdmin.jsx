@@ -26,7 +26,7 @@ function LoginAdmin() {
         setUserData(response.data);
         setIsAuthorized(true); // Set authorization state
         console.log("Admin logged in successfully");
-        navigateTo('/allevent')
+        navigateTo('/adminpanel')
       }
     } catch (error) {
       setError(error);
