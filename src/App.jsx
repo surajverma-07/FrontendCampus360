@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
@@ -9,11 +9,9 @@ import AllEvents from "./pages/AllEvent";
 import MyEvent from "./pages/MyEvent";
 import AllCareers from "./pages/AllCareers";
 import MyCareers from "./pages/MyCareers";
-import { userState } from "./context/UserContext";
 
 function App() {
-  const navigate = useNavigate();
-  const { isAuthorized } = userState();
+  
   return (
     <>
       <Routes>
