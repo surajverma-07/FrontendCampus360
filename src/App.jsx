@@ -24,7 +24,7 @@ function App() {
       console.log("isAuthorized is false, redirecting to login");
       navigate("/login");
     }
-  }, [isAuthorized, navigate]); 
+  }, [isAuthorized]); 
 
   return (
     <>
