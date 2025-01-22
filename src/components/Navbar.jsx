@@ -19,7 +19,7 @@ import axios from "axios"
 
 const Navbar = () => {
   const navigate = useNavigate()
-  const { userData, setUserData, isAuthorized, setIsAuthorized } = userState()
+  const { userData, setUserData, isAuthorized,isAdmin, setIsAuthorized } = userState()
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
 
@@ -118,7 +118,7 @@ const Navbar = () => {
       )}
     </Menu>
   )
-
+  const route = isAdmin ? "/adminpanel" : "/profile";
   return (
     <AppBar position="static">
       <Toolbar>
@@ -142,7 +142,7 @@ const Navbar = () => {
                   alt="User Avatar"
                   src={userData?.data?.user?.profileImage || "/static/images/avatar/1.jpg"}
                   sx={{ width: 40, height: 40, marginLeft: 2, cursor: "pointer" }}
-                  onClick={() => navigate("/profile")}
+                  onClick={() => navigate(route)}
                 />
                 <Button color="inherit" onClick={handleLogout} sx={{ marginLeft: 2 }}>
                   Logout
