@@ -30,7 +30,7 @@ function LoginUser() {
       if (response.data.success) {
         setUserData(response.data);
         setIsAuthorized(true);
-        navigateTo('/all-posts');
+        navigateTo('/post/all-posts');
         toast.success('Login Successfully');
       } else {
         setIsAuthorized(false);

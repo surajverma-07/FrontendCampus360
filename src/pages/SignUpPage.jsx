@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
+const navigate = useNavigate();
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -31,6 +33,7 @@ const SignUpPage = () => {
       const response = await axios.post('http://localhost:3000/api/v1/campus-connect/user/register', formData,{
         withCredentials: true
       });
+      navigate('/login');
       console.log('Sign up successful:', response.data);
     } catch (error) {
       console.error('Sign up error:', error);

@@ -64,7 +64,8 @@ const Navbar = () => {
     { title: "Career", options: ["Add Career", "My Careers", "All Careers"] },
     { title: "Product", options: ["Add Product", "My Products", "All Products"] },
   ]
-
+  // console.log("userData", userData.data.user);
+  
   const renderMenu = (category) => (
     <Menu
       anchorEl={anchorEls[category.toLowerCase()]}
@@ -139,7 +140,7 @@ const Navbar = () => {
               <>
                 <Avatar
                   alt="User Avatar"
-                  src={userData?.avatarUrl || "/static/images/avatar/1.jpg"}
+                  src={userData?.data.user.profileImage || "/static/images/avatar/1.jpg"}
                   sx={{ width: 40, height: 40, marginLeft: 2, cursor: "pointer" }}
                   onClick={() => navigate("/profile")}
                 />

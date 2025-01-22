@@ -33,7 +33,7 @@ function App() {
       console.log("User not authorized, redirecting to login");
       navigate("/login");
     }
-  }, [isAuthorized, navigate]);
+  }, [isAuthorized]);
 
   const isAdmin = userData?.role === "admin"; // Example check for admin role
    console.log("isAuthorized: ", isAuthorized);
@@ -59,13 +59,13 @@ function App() {
               <Route path="post/add-post" element={<AddPost />} exact />
 
               {/* Event Routes */}
-              <Route path="event/all-event" element={<AllEvents />} exact />
-              <Route path="event/my-event" element={<MyEvent />} exact />
+              <Route path="event/all-events" element={<AllEvents />} exact />
+              <Route path="event/my-events" element={<MyEvent />} exact />
               <Route path="event/add-event" element={<AddEvent />} exact />
 
               {/* Career Routes */}
-              <Route path="career/all-career" element={<AllCareers />} exact />
-              <Route path="career/my-career" element={<MyCareers />} exact />
+              <Route path="career/all-careers" element={<AllCareers />} exact />
+              <Route path="career/my-careers" element={<MyCareers />} exact />
               <Route path="career/add-career" element={<AddCareer />} exact />
 
               {/* Product Routes */}
