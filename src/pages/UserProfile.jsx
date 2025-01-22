@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react"
-import { Container, Grid, Paper, Typography, Box } from "@mui/material"
+import { Container, Grid, Paper, Typography, Box, CircularProgress } from "@mui/material"
 import { useTheme } from "@mui/material/styles"
-import ProfileInfo from "../components/ProfileInfo.jsx"
-import EventOrganizerStatus from "../components/EventOrganizerStatus.jsx"
-import ProductsManagement from "../components/ProductsManagement.jsx"
+import ProfileSection from "../components/ProfileSection.jsx"
+import AccountManagement from "../components/AccountManagement.jsx";
+import EventOrganizerSection from "../components/EventOrganizerSection.jsx"
 import UserActions from "../components/UserActions.jsx"
 import axios from "axios"
 
@@ -18,7 +18,7 @@ const Dashboard = () => {
         const response = await axios.get("http://localhost:3000/api/v1/campus-connect/user/current-user", {
           withCredentials: true,
         })
-        setUserData(response.data)
+        setUserData(response.data.data.user)
         setLoading(false)
       } catch (error) {
         console.error("Error fetching user data:", error)
@@ -30,7 +30,11 @@ const Dashboard = () => {
   }, [])
 
   if (loading) {
-    return <Typography>Loading...</Typography>
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <CircularProgress />
+      </Box>
+    )
   }
 
   return (
@@ -56,36 +60,22 @@ const Dashboard = () => {
           </Paper>
         </Grid>
         <Grid item xs={12} md={8} lg={9}>
-          <Paper
-            sx={{
-              p: 2,
-              display: "flex",
-              flexDirection: "column",
-              height: 240,
-            }}
-          >
-            <ProfileInfo userData={userData} />
+          <Paper sx={{ p: 2, display: "flex", flexDirection: "column", height: "100%" }}>
+            <ProfileSection userData={userData} />
           </Paper>
         </Grid>
         <Grid item xs={12} md={4} lg={3}>
-          <Paper
-            sx={{
-              p: 2,
-              display: "flex",
-              flexDirection: "column",
-              height: 240,
-            }}
-          >
-            <EventOrganizerStatus userData={userData} />
+          <Paper sx={{ p: 2, display: "flex", flexDirection: "column", height: "100%" }}>
+            <EventOrganizerSection userData={userData} />
           </Paper>
         </Grid>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-            <ProductsManagement />
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 2, display: "flex", flexDirection: "column", height: "100%" }}>
+            <AccountManagement userData={userData} />
           </Paper>
         </Grid>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 2, display: "flex", flexDirection: "column", height: "100%" }}>
             <UserActions />
           </Paper>
         </Grid>

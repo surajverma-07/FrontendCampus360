@@ -1,50 +1,90 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import Home from "./pages/Home";
-import LoginPage from "./pages/LoginPage";
-import SignUpPage from "./pages/SignUpPage";
-import AllPost from "./pages/AllPost";
-import MyPost from "./pages/MyPost";
-import AllEvents from "./pages/AllEvent";
-import MyEvent from "./pages/MyEvent";
-import AllCareers from "./pages/AllCareers";
-import MyCareers from "./pages/MyCareers";
-import AllProducts from "./pages/AllProducts";
-import MyProducts from "./pages/MyProducts";
-import AddPost from "./pages/AddPost";
 import { userState } from "./context/UserContext";
-import AdminPanel from "./pages/AdminPanel";
+import Navbar from "./components/Navbar.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
+
+// Lazy-loaded pages for better performance  
+const Home = React.lazy(() => import("./pages/Home.jsx"));
+const LoginPage = React.lazy(() => import("./pages/LoginPage.jsx"));
+const SignUpPage = React.lazy(() => import("./pages/SignUpPage.jsx"));
+const AllPost = React.lazy(() => import("./pages/AllPost.jsx"));
+const MyPost = React.lazy(() => import("./pages/MyPost.jsx"));
+const AddPost = React.lazy(() => import("./pages/AddPost.jsx"));
+const AllEvents = React.lazy(() => import("./pages/AllEvent.jsx"));
+const MyEvent = React.lazy(() => import("./pages/MyEvent.jsx"));
+const AddEvent = React.lazy(() => import("./pages/AddEvent.jsx"));
+const AllCareers = React.lazy(() => import("./pages/AllCareers.jsx"));
+const MyCareers = React.lazy(() => import("./pages/MyCareers.jsx"));
+const AddCareer = React.lazy(() => import("./pages/AddCareer.jsx"));
+const AllProducts = React.lazy(() => import("./pages/AllProducts.jsx"));
+const MyProducts = React.lazy(() => import("./pages/MyProducts.jsx"));
+const AddProducts = React.lazy(() => import("./pages/AddProducts.jsx"));
+const Profile = React.lazy(() => import("./pages/UserProfile.jsx"));
+const AdminPanel = React.lazy(() => import("./pages/AdminPanel.jsx"));
 
 function App() {
   const navigate = useNavigate();
-  const { isAuthorized } = userState();
+  const { isAuthorized, userData } = userState();
 
-  
   useEffect(() => {
+    // Redirect to login if the user is not authorized
     if (isAuthorized === false) {
-      console.log("isAuthorized is false, redirecting to login");
+      console.log("User not authorized, redirecting to login");
       navigate("/login");
     }
-  }, [isAuthorized]); 
+  }, [isAuthorized, navigate]);
 
+  const isAdmin = userData?.role === "admin"; // Example check for admin role
+   console.log("isAuthorized: ", isAuthorized);
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Home />} exact />
-        <Route path="/signup" element={<SignUpPage />} exact />
-        <Route path="/login" element={<LoginPage />} exact />
-        <Route path="/allpost" element={<AllPost />} exact />
-        <Route path="/mypost" element={<MyPost />} exact />
-        <Route path="/allevent" element={<AllEvents />} exact />
-        <Route path="/myevent" element={<MyEvent />} exact />
-        <Route path="/allcareer" element={<AllCareers />} exact />
-        <Route path="/mycareer" element={<MyCareers />} exact />
-        <Route path="/allproducts" element={<AllProducts />} exact />
-        <Route path="/myproducts" element={<MyProducts />} exact />
-        <Route path="/adminpanel" element={<AdminPanel />} exact />
-        <Route path="/addpost" element={<AddPost />} exact />
-        
-      </Routes>
+      {/* Navbar visible on all pages */}
+      {/* <Navbar /> */}
+
+      {/* Suspense for lazy-loaded components */}
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} exact />
+          <Route path="/signup" element={<SignUpPage />} exact />
+          <Route path="/login" element={<LoginPage />} exact />
+
+          {/* Protected Routes */}
+          {isAuthorized && (
+            <>
+              {/* Post Routes */}
+              <Route path="post/all-posts" element={<AllPost />} exact />
+              <Route path="post/my-posts" element={<MyPost />} exact />
+              <Route path="post/add-post" element={<AddPost />} exact />
+
+              {/* Event Routes */}
+              <Route path="event/all-event" element={<AllEvents />} exact />
+              <Route path="event/my-event" element={<MyEvent />} exact />
+              <Route path="event/add-event" element={<AddEvent />} exact />
+
+              {/* Career Routes */}
+              <Route path="career/all-career" element={<AllCareers />} exact />
+              <Route path="career/my-career" element={<MyCareers />} exact />
+              <Route path="career/add-career" element={<AddCareer />} exact />
+
+              {/* Product Routes */}
+              <Route path="product/all-products" element={<AllProducts />} exact />
+              <Route path="product/my-products" element={<MyProducts />} exact />
+              <Route path="product/add-product" element={<AddProducts />} exact />
+               
+              {/* Profile */}
+              <Route path="/profile" element={<Profile />} exact />
+
+              {/* Admin-only Route */}
+              {isAdmin && <Route path="/admin-panel" element={<AdminPanel />} exact />}
+            </>
+          )}
+
+          {/* Fallback route for 404 */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
     </>
   );
 }

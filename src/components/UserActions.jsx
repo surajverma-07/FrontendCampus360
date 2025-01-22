@@ -3,45 +3,25 @@ import { Typography, Button, TextField, Box, Dialog, DialogTitle, DialogContent,
 import axios from "axios"
 
 const UserActions = () => {
-  const [openPasswordDialog, setOpenPasswordDialog] = useState(false)
   const [openReportDialog, setOpenReportDialog] = useState(false)
-  const [currentPassword, setCurrentPassword] = useState("")
-  const [newPassword, setNewPassword] = useState("")
-  const [reportedUserId, setReportedUserId] = useState("")
-  const [reportReason, setReportReason] = useState("")
+  const [reportData, setReportData] = useState({
+    reportedUserId: "",
+    reason: "",
+  })
 
-  const handleChangePassword = async () => {
-    try {
-      await axios.post(
-        "http://localhost:3000/api/v1/campus-connect/user/change-password",
-        {
-          currentPassword,
-          newPassword,
-        },
-        { withCredentials: true },
-      )
-      setOpenPasswordDialog(false)
-      setCurrentPassword("")
-      setNewPassword("")
-      alert("Password changed successfully")
-    } catch (error) {
-      console.error("Error changing password:", error)
-      alert("Failed to change password")
-    }
+  const handleInputChange = (e) => {
+    setReportData({ ...reportData, [e.target.name]: e.target.value })
   }
 
   const handleReportUser = async () => {
     try {
       await axios.post(
-        `http://localhost:3000/api/v1/campus-connect/user/report/${reportedUserId}`,
-        {
-          reason: reportReason,
-        },
+        `http://localhost:3000/api/v1/campus-connect/user/report/${reportData.reportedUserId}`,
+        { reason: reportData.reason },
         { withCredentials: true },
       )
       setOpenReportDialog(false)
-      setReportedUserId("")
-      setReportReason("")
+      setReportData({ reportedUserId: "", reason: "" })
       alert("User reported successfully")
     } catch (error) {
       console.error("Error reporting user:", error)
@@ -54,35 +34,9 @@ const UserActions = () => {
       <Typography variant="h6" gutterBottom>
         User Actions
       </Typography>
-      <Button onClick={() => setOpenPasswordDialog(true)}>Change Password</Button>
-      <Button onClick={() => setOpenReportDialog(true)}>Report User</Button>
-
-      <Dialog open={openPasswordDialog} onClose={() => setOpenPasswordDialog(false)}>
-        <DialogTitle>Change Password</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Current Password"
-            type="password"
-            fullWidth
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-          />
-          <TextField
-            margin="dense"
-            label="New Password"
-            type="password"
-            fullWidth
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenPasswordDialog(false)}>Cancel</Button>
-          <Button onClick={handleChangePassword}>Change Password</Button>
-        </DialogActions>
-      </Dialog>
+      <Button onClick={() => setOpenReportDialog(true)} variant="contained">
+        Report User
+      </Button>
 
       <Dialog open={openReportDialog} onClose={() => setOpenReportDialog(false)}>
         <DialogTitle>Report User</DialogTitle>
@@ -90,19 +44,21 @@ const UserActions = () => {
           <TextField
             autoFocus
             margin="dense"
+            name="reportedUserId"
             label="User ID to Report"
             fullWidth
-            value={reportedUserId}
-            onChange={(e) => setReportedUserId(e.target.value)}
+            value={reportData.reportedUserId}
+            onChange={handleInputChange}
           />
           <TextField
             margin="dense"
+            name="reason"
             label="Reason for Reporting"
             fullWidth
             multiline
             rows={4}
-            value={reportReason}
-            onChange={(e) => setReportReason(e.target.value)}
+            value={reportData.reason}
+            onChange={handleInputChange}
           />
         </DialogContent>
         <DialogActions>
