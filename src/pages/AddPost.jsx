@@ -1,63 +1,83 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Typography, Button, TextField, Box, Grid } from "@mui/material";
+import axios from "axios";
 
 const AddPost = () => {
-  const [content, setContent] = useState('');
-  const [file, setFile] = useState(null);
-  const [message, setMessage] = useState('');
+  const [formData, setFormData] = useState({
+    content: "",
+  });
+  const [postImage, setPostImage] = useState(null);
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setPostImage(e.target.files[0]);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('content', content);
-    if (file) {
-      formData.append('postImage', file);
+    const formDataToSend = new FormData();
+    formDataToSend.append("content", formData.content);
+    if (postImage) {
+      formDataToSend.append("postImage", postImage);
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/api/v1/campus-connect/post/add', formData, {
+      const response = await axios.post("http://localhost:3000/api/v1/campus-connect/posts/add", formDataToSend, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
       });
-      setMessage(response.data.message);
+      // Handle response
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Error while adding post');
+      // Handle error
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-4">Add a New Post</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Content:</label>
-          <textarea
-            className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+      <Typography variant="h6" gutterBottom>
+        Add New Post
+      </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <TextField
+            name="content"
+            label="Post Content"
+            fullWidth
+            multiline
+            rows={4}
+            value={formData.content}
+            onChange={handleInputChange}
             required
           />
-        </div>  
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Image:</label>
+        </Grid>
+        <Grid item xs={12}>
           <input
-            className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none"
+            accept="image/*"
+            style={{ display: 'none' }}
+            id="raised-button-file"
             type="file"
-            onChange={(e) => setFile(e.target.files[0])}
+            onChange={handleImageChange}
           />
-        </div>
-        <button
-          className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none"
-          type="submit"
-        >
-          Add Post
-        </button>
-      </form>
-      {message && <p className="mt-4 text-center text-green-500">{message}</p>}
-    </div>
+          <label htmlFor="raised-button-file">
+            <Button variant="contained" component="span">
+              Upload Post Image
+            </Button>
+          </label>
+          {postImage && <Typography variant="body2">{postImage.name}</Typography>}
+        </Grid>
+      </Grid>
+      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+        Add Post
+      </Button>
+    </Box>
   );
 };
 
