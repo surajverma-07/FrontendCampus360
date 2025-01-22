@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Typography, Button, TextField, Box, Grid } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-const navigate = useNavigate();
 
 const AddProduct = () => {
+  const navigate = useNavigate();
     const [formData, setFormData] = useState({
     name: "",
     description: "",

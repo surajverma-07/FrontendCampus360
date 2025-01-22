@@ -140,7 +140,7 @@ const Navbar = () => {
               <>
                 <Avatar
                   alt="User Avatar"
-                  src={userData?.data.user.profileImage || "/static/images/avatar/1.jpg"}
+                  src={userData?.data?.user?.profileImage || "/static/images/avatar/1.jpg"}
                   sx={{ width: 40, height: 40, marginLeft: 2, cursor: "pointer" }}
                   onClick={() => navigate("/profile")}
                 />

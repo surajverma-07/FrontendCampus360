@@ -25,7 +25,7 @@ const AdminPanel = React.lazy(() => import("./pages/AdminPanel.jsx"));
 
 function App() {
   const navigate = useNavigate();
-  const { isAuthorized, userData } = userState();
+  const { isAuthorized, userData ,isAdmin} = userState();
 
   useEffect(() => {
     // Redirect to login if the user is not authorized
@@ -34,8 +34,9 @@ function App() {
       navigate("/login");
     }
   }, [isAuthorized]);
-
-  const isAdmin = userData?.role === "admin"; // Example check for admin role
+  console.log("userData to check admin: ", userData);
+  // const isAdmin = userData?.data?.loggedInAdmin === "admin"; // Example check for admin role
+  console.log("isAdmin: ", isAdmin);
    console.log("isAuthorized: ", isAuthorized);
   return (
     <>
@@ -77,7 +78,7 @@ function App() {
               <Route path="/profile" element={<Profile />} exact />
 
               {/* Admin-only Route */}
-              {isAdmin && <Route path="/admin-panel" element={<AdminPanel />} exact />}
+              {isAdmin && <Route path="/adminpanel" element={<AdminPanel />} exact />}
             </>
           )}
 

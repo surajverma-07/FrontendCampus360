@@ -17,16 +17,16 @@ const UserProvider = ({ children }) => {
           "http://localhost:3000/api/v1/campus-connect/user/current-user/",
           { withCredentials: true }
         );
-        if (response.data.success) {
+        if (response.data.user) {
           setIsAuthorized(true);
           setUserData(response.data);
         } else {
           try {
-            const adminResponse = await axios.post(
+            const adminResponse = await axios.get(
               "http://localhost:3000/api/v1/campus-connect/admin/profile/",
               { withCredentials: true }
             );
-
+            console.log("Admin Response :: ",adminResponse);
             if (adminResponse.data.success) {
               setIsAdmin(true);
               setUserData(adminResponse.data);
