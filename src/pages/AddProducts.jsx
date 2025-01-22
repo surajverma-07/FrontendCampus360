@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Typography, Button, TextField, Box, Grid } from "@mui/material";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+const navigate = useNavigate();
 
 const AddProduct = () => {
-  const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: "",
@@ -13,14 +15,14 @@ const AddProduct = () => {
   const [image, setImage] = useState(null);
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  };
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+    
+    const handleImageChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setImage(e.target.files[0]);
+        }
+    };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,13 +38,14 @@ const AddProduct = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/api/v1/campus-connect/product/add", formDataToSend, {
+      const response = await axios.post("http://localhost:3000/api/v1/campus-store/products/add", formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
       });
       // Handle response
+      navigate('/product/my-products');
     } catch (error) {
       // Handle error
     }
