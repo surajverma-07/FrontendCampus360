@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { Typography, Button, TextField, Box, Grid } from "@mui/material"
 import axios from "axios"
-
+import { useNavigate } from "react-router-dom"
+import toast from "react-hot-toast"
 const AddCareer = () => {
   const [formData, setFormData] = useState({
     title: "",
@@ -12,7 +13,7 @@ const AddCareer = () => {
     dueDate: "",
     applyLink: "",
   })
-
+const navigate = useNavigate();
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
@@ -24,9 +25,12 @@ const AddCareer = () => {
       const response = await axios.post("http://localhost:3000/api/v1/campus-connect/career/add", formData, {
         withCredentials: true,
       })
+      navigate('/post/my-careers');
+      toast.success("Opportunity Listed Successfully")
       // Handle response
     } catch (error) {
       // Handle error
+      toast.error(`Opportunity Listing Error ${error}`)
     }
   }
 

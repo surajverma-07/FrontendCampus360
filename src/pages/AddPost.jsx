@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Typography, Button, TextField, Box, Grid } from "@mui/material";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+const navigate = useNavigate();
 const AddPost = () => {
   const [formData, setFormData] = useState({
     content: "",
   });
   const [postImage, setPostImage] = useState(null);
-
+  const [loading,setLoading] = useState(false);
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -28,15 +30,21 @@ const AddPost = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/api/v1/campus-connect/posts/add", formDataToSend, {
+      const response = await axios.post("http://localhost:3000/api/v1/campus-connect/post/add", formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
       });
       // Handle response
+      setLoading(true)
+      toast.success("Post Added Successfully")
+      navigate('/post/my-posts');
+
     } catch (error) {
       // Handle error
+      setLoading(false)
+      toast.error(`Error in adding post ${error}`,)
     }
   };
 
@@ -75,7 +83,7 @@ const AddPost = () => {
         </Grid>
       </Grid>
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-        Add Post
+        {loading?"Loading...":"Add Post"}
       </Button>
     </Box>
   );
