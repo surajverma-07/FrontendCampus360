@@ -1,267 +1,174 @@
-import React from "react";
-import Avatar from "@mui/material/Avatar";
-import { Link, useNavigate } from "react-router-dom";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import PersonPinIcon from "@mui/icons-material/PersonPin";
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-import AddIcon from "@mui/icons-material/Add";
-import SchoolIcon from "@mui/icons-material/School";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { userState } from "../context/UserContext";
-import { Select } from "@chakra-ui/react";
-import axios from "axios";
+import React, { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react";
-import { useDisclosure } from "@chakra-ui/react";
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Avatar,
+  useMediaQuery,
+  useTheme,
+  Box,
+} from "@mui/material"
+import MenuIcon from "@mui/icons-material/Menu"
+import { userState } from "../context/UserContext"
+import axios from "axios"
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  const { userData, setUserData, isAuthorized, setisAuthorized } = userState();
-  const [open, setOpen] = React.useState(false);
-  const toggleDrawer = (newOpen) => () => {
-    setOpen(newOpen);
-  };
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate()
+  const { userData, setUserData, isAuthorized, setIsAuthorized } = userState()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
+
+  const [anchorEls, setAnchorEls] = useState({
+    post: null,
+    event: null,
+    career: null,
+    product: null,
+  })
+  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = useState(null)
+
+  const handleMenuOpen = (category, event) => {
+    setAnchorEls({ ...anchorEls, [category]: event.currentTarget })
+  }
+
+  const handleMenuClose = (category) => {
+    setAnchorEls({ ...anchorEls, [category]: null })
+  }
+
+  const handleMobileMenuOpen = (event) => {
+    setMobileMenuAnchorEl(event.currentTarget)
+  }
+
+  const handleMobileMenuClose = () => {
+    setMobileMenuAnchorEl(null)
+  }
 
   const handleLogout = async () => {
-    const response = await axios.get(
-      "http://localhost:3000/api/v1/campus-connect/user/logout",
-      { withCredentials: true }
-    );
-    navigate("/");
-  };
-
-  const handleNavigation = (event) => {
-    const value = event.target.value;
-    if (value) {
-      navigate(value);
+    try {
+      await axios.get("http://localhost:3000/api/v1/campus-connect/user/logout", { withCredentials: true })
+      setIsAuthorized(false)
+      setUserData(null)
+      navigate("/login")
+    } catch (error) {
+      console.error("Logout failed:", error)
     }
-  };
+  }
 
-  return (
-    <>
-      <div className="w-screen h-20 md:mb-2 flex items-center justify-between">
-        <div className="text-3xl md:ml-4 ml-1">
-          <Link to={"/"}>Campus360</Link>
-        </div>
+  const menuItems = [
+    { title: "Post", options: ["Add Post", "My Posts", "All Posts"] },
+    { title: "Event", options: ["Add Event", "My Events", "All Events"] },
+    { title: "Career", options: ["Add Career", "My Careers", "All Careers"] },
+    { title: "Product", options: ["Add Product", "My Products", "All Products"] },
+  ]
 
-        <div className="md:hidden">
-          <Button onClick={toggleDrawer(true)}>
-            <AddIcon />
-          </Button>
-          <Drawer open={open} onClose={toggleDrawer(false)}>
-            <Box
-              sx={{ width: 250 }}
-              role="presentation"
-              onClick={toggleDrawer(false)}
-            >
-              <List>
-                <Link to={"/"}>
-                  <ListItem disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <SchoolIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Campus360" />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
-                <Divider />
+  const renderMenu = (category) => (
+    <Menu
+      anchorEl={anchorEls[category.toLowerCase()]}
+      open={Boolean(anchorEls[category.toLowerCase()])}
+      onClose={() => handleMenuClose(category.toLowerCase())}
+    >
+      {menuItems
+        .find((item) => item.title === category)
+        .options.map((option) => (
+          <MenuItem
+            key={option}
+            onClick={() => {
+              handleMenuClose(category.toLowerCase())
+              navigate(`/${category.toLowerCase()}/${option.toLowerCase().replace(" ", "-")}`)
+            }}
+          >
+            {option}
+          </MenuItem>
+        ))}
+    </Menu>
+  )
 
-                {isAuthorized ? (
-                  <>
-                    <Select
-                      className="w-40 p-2 border-2 border-blue-800"
-                      placeholder="See More"
-                      size="lg"
-                      onChange={(e) => {
-                        const selectedValue = e.target.value;
-                        if (selectedValue) {
-                          navigate(selectedValue);
-                        }
-                      }}
-                    >
-                      <option value="/allcareer">All Career</option>
-                      <option value="/allevent">All Event</option>
-                      <option value="/allpost">All Post</option>
-                      <option value="/allproducts">All Products</option>
-                      <option value="/mycareer">My Careers</option>
-                      <option value="/myevent">My Event</option>
-                      <option value="/mypost">My Post</option>
-                      <option value="/myproducts">My Products</option>
-                    </Select>
-
-                    <div className="w-40">
-                      <ListItem disablePadding onClick={handleLogout}>
-                        <ListItemButton>
-                          <ListItemIcon>
-                            <LogoutIcon />
-                          </ListItemIcon>
-                          <ListItemText primary={"Logout"} />
-                        </ListItemButton>
-                      </ListItem>
-                    </div>
-                    <Avatar
-                      alt="User Avatar"
-                      className="mx-6"
-                      src={userData?.avatarUrl || "/static/images/avatar/1.jpg"}
-                      sx={{ width: 50, height: 50 }}
-                      onClick={onOpen}
-                    />
-                    <div>
-                      <Modal
-                        closeOnOverlayClick={false}
-                        isOpen={isOpen}
-                        className="min-w-96 min-h-96 p-4 "
-                        onClose={onClose}
-                        isCentered // This will center the modal on the screen
-                      >
-                        <ModalOverlay />
-                        <ModalContent>
-                          <ModalHeader>Create your account</ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody pb={6}>
-                            Lorem ipsum, dolor sit amet consectetur adipisicing
-                            elit. Voluptatibus, aliquid!
-                          </ModalBody>
-                          <ModalFooter>
-                            <Button colorScheme="blue" mr={3}>
-                              Save
-                            </Button>
-                            <Button onClick={onClose}>Cancel</Button>
-                          </ModalFooter>
-                        </ModalContent>
-                      </Modal>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <Link to={"/login"}>
-                      <ListItem disablePadding>
-                        <ListItemButton>
-                          <ListItemIcon>
-                            <PersonAddAltIcon />
-                          </ListItemIcon>
-                          <ListItemText primary={"Login"} />
-                        </ListItemButton>
-                      </ListItem>
-                    </Link>
-                    <Divider />
-
-                    <Link to={"/signup"}>
-                      <ListItem disablePadding>
-                        <ListItemButton>
-                          <ListItemIcon>
-                            <PersonPinIcon />
-                          </ListItemIcon>
-                          <ListItemText primary={"Signup"} />
-                        </ListItemButton>
-                      </ListItem>
-                    </Link>
-                  </>
-                )}
-              </List>
-            </Box>
-          </Drawer>
-        </div>
-
-        <div className="md:mr-5 hidden text-xl mr-1 md:flex">
-          {isAuthorized ? (
-            ""
-          ) : (
-            <>
-              <div className="mx-4 rounded-lg p-2">
-                <Link to={"/login"}>
-                  <Button variant="outlined">Login</Button>
-                </Link>
-              </div>
-              <div className="mx-4 rounded-lg p-2">
-                <Link to={"/signup"}>
-                  <Button variant="outlined">Sign Up</Button>
-                </Link>
-              </div>
-            </>
-          )}
-          {isAuthorized ? (
-            <>
-              <Select
-                className="w-40 p-2 border-2 border-blue-800"
-                placeholder="See More"
-                size="lg"
-                onChange={(e) => {
-                  const selectedValue = e.target.value;
-                  if (selectedValue) {
-                    navigate(selectedValue);
-                  }
+  const renderMobileMenu = (
+    <Menu anchorEl={mobileMenuAnchorEl} open={Boolean(mobileMenuAnchorEl)} onClose={handleMobileMenuClose}>
+      {menuItems.map((item) => (
+        <MenuItem key={item.title}>
+          <Typography variant="subtitle1">{item.title}</Typography>
+          <Menu anchorEl={mobileMenuAnchorEl} open={Boolean(mobileMenuAnchorEl)} onClose={handleMobileMenuClose}>
+            {item.options.map((option) => (
+              <MenuItem
+                key={option}
+                onClick={() => {
+                  handleMobileMenuClose()
+                  navigate(`/${item.title.toLowerCase()}/${option.toLowerCase().replace(" ", "-")}`)
                 }}
               >
-                <option value="/allcareer">All Career</option>
-                <option value="/allevent">All Event</option>
-                <option value="/allpost">All Post</option>
-                <option value="/allproducts">All Products</option>
-                <option value="/mycareer">My Careers</option>
-                <option value="/myevent">My Event</option>
-                <option value="/mypost">My Post</option>
-                <option value="/myproducts">My Products</option>
-              </Select>
+                {option}
+              </MenuItem>
+            ))}
+          </Menu>
+        </MenuItem>
+      ))}
+      {isAuthorized ? (
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      ) : (
+        <>
+          <MenuItem onClick={() => navigate("/login")}>Login</MenuItem>
+          <MenuItem onClick={() => navigate("/signup")}>Sign Up</MenuItem>
+        </>
+      )}
+    </Menu>
+  )
 
-              <Button variant="outlined" onClick={handleLogout}>
-                Logout
-              </Button>
-              <Avatar
-                alt="User Avatar"
-                className="mx-6"
-                src={userData?.avatarUrl || "/static/images/avatar/1.jpg"}
-                sx={{ width: 50, height: 50 }}
-                onClick={onOpen}
-              />
-                <Modal
-                  className="min-w-96 min-h-96 p-4 "
-                  closeOnOverlayClick={false}
-                  isOpen={isOpen}
-                  onClose={onClose}
-                  isCentered // This will center the modal on the screen
-                >
-                  <ModalOverlay />
-                  <ModalContent>
-                    <ModalHeader>Create your account</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody pb={6}>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Voluptatibus, aliquid!
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button colorScheme="blue" mr={3}>
-                        Save
-                      </Button>
-                      <Button onClick={onClose}>Cancel</Button>
-                    </ModalFooter>
-                  </ModalContent>
-                </Modal>
-              
-            </>
-          ) : (
-            ""
-          )}
-        </div>
-      </div>
-    </>
-  );
-};
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1, textDecoration: "none", color: "inherit" }}>
+          Campus360
+        </Typography>
+        {!isMobile && (
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {isAuthorized &&
+              menuItems.map((item) => (
+                <React.Fragment key={item.title}>
+                  <Button color="inherit" onClick={(e) => handleMenuOpen(item.title.toLowerCase(), e)}>
+                    {item.title}
+                  </Button>
+                  {renderMenu(item.title)}
+                </React.Fragment>
+              ))}
+            {isAuthorized ? (
+              <>
+                <Avatar
+                  alt="User Avatar"
+                  src={userData?.avatarUrl || "/static/images/avatar/1.jpg"}
+                  sx={{ width: 40, height: 40, marginLeft: 2, cursor: "pointer" }}
+                  onClick={() => navigate("/profile")}
+                />
+                <Button color="inherit" onClick={handleLogout} sx={{ marginLeft: 2 }}>
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button color="inherit" component={Link} to="/login">
+                  Login
+                </Button>
+                <Button color="inherit" component={Link} to="/signup">
+                  Sign Up
+                </Button>
+              </>
+            )}
+          </Box>
+        )}
+        {isMobile && (
+          <IconButton edge="end" color="inherit" aria-label="menu" onClick={handleMobileMenuOpen}>
+            <MenuIcon />
+          </IconButton>
+        )}
+      </Toolbar>
+      {renderMobileMenu}
+    </AppBar>
+  )
+}
 
-export default Navbar;
+export default Navbar
+

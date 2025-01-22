@@ -11,6 +11,7 @@ import AllCareers from "./pages/AllCareers";
 import MyCareers from "./pages/MyCareers";
 import AllProducts from "./pages/AllProducts";
 import MyProducts from "./pages/MyProducts";
+import AddPost from "./pages/AddPost";
 import { userState } from "./context/UserContext";
 import AdminPanel from "./pages/AdminPanel";
 
@@ -41,7 +42,8 @@ function App() {
         <Route path="/allproducts" element={<AllProducts />} exact />
         <Route path="/myproducts" element={<MyProducts />} exact />
         <Route path="/adminpanel" element={<AdminPanel />} exact />
-
+        <Route path="/addpost" element={<AddPost />} exact />
+        
       </Routes>
     </>
   );

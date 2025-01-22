@@ -95,8 +95,9 @@ function AllPost() {
                     </Grid>
                   </CardContent>
                   <CardMedia
+                  sx={{ width: 250, height: 250 }}
                     component="img"
-                    height="140"
+                    // height="140"
                     image={post.postImage}
                     alt={post.content}
                   />
