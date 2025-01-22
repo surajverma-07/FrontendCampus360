@@ -25,7 +25,7 @@ const navigate = useNavigate();
       const response = await axios.post("http://localhost:3000/api/v1/campus-connect/career/add", formData, {
         withCredentials: true,
       })
-      navigate('/post/my-careers');
+      navigate('/career/my-careers');
       toast.success("Opportunity Listed Successfully")
       // Handle response
     } catch (error) {
