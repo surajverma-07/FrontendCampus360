@@ -75,6 +75,7 @@ export default function AdminPanel() {
     try {
       const { data } = await axios.get('http://localhost:3000/api/v1/campus-connect/admin/users/', { withCredentials: true });
       setUsers(data.data.users);
+      console.log("users",data.data.users)
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -135,7 +136,7 @@ export default function AdminPanel() {
   // Block/Unblock user
   const handleUserBlockToggle = async (userId, action) => {
     try {
-      await axios.patch(`http://localhost:3000/api/v1/campus-connect/admin/user/${action}/${userId}`, {}, { withCredentials: true });
+      await axios.post(`http://localhost:3000/api/v1/campus-connect/admin/user/${action}/${userId}`, {}, { withCredentials: true });
       alert(`User ${action === 'block' ? 'blocked' : 'unblocked'} successfully`);
       fetchUsers();
     } catch (error) {
@@ -147,7 +148,7 @@ export default function AdminPanel() {
   // Approve/Reject application
   const handleApplicationAction = async (userId, action) => {
     try {
-      await axios.patch(`http://localhost:3000/api/v1/campus-connect/admin/event-organizer/${action}/${userId}`, {}, { withCredentials: true });
+      await axios.post(`http://localhost:3000/api/v1/campus-connect/admin/event-organizer/${action}/${userId}`, {}, { withCredentials: true });
       alert(`Application ${action === 'approve' ? 'approved' : 'rejected'} successfully`);
       fetchEventOrganizerApplications();
     } catch (error) {
@@ -292,15 +293,15 @@ export default function AdminPanel() {
               </TableHead>
               <TableBody>
                 {applications.map((app) => (
-                  <TableRow key={app.userId}>
+                  <TableRow key={app._id}>
                     <TableCell>{app.userId}</TableCell>
                     <TableCell>{app.name}</TableCell>
                     <TableCell>{app.email}</TableCell>
                     <TableCell>
-                      <Button onClick={() => handleApplicationAction(app.userId, 'approve')} variant="contained" color="success">
+                      <Button onClick={() => handleApplicationAction(app._id, 'approve')} variant="contained" color="success">
                         Approve
                       </Button>
-                      <Button onClick={() => handleApplicationAction(app.userId, 'reject')} variant="contained" color="error">
+                      <Button onClick={() => handleApplicationAction(app._id, 'reject')} variant="contained" color="error">
                         Reject
                       </Button>
                     </TableCell>
