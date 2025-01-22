@@ -1,7 +1,6 @@
-import type React from "react"
-import { useState } from "react"
-import { Typography, Button, TextField, Box, Grid } from "@mui/material"
-import axios from "axios"
+import React, { useState } from "react";
+import { Typography, Button, TextField, Box, Grid } from "@mui/material";
+import axios from "axios";
 
 const AddProduct = () => {
   const [formData, setFormData] = useState({
@@ -10,105 +9,102 @@ const AddProduct = () => {
     price: "",
     category: "",
     phone: "",
-  })
-  const [image, setImage] = useState<File | null>(null)
+  });
+  const [image, setImage] = useState(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0])
+      setImage(e.target.files[0]);
     }
-  }
+  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const productData = new FormData()
-    Object.keys(formData).forEach((key) => {
-      productData.append(key, formData[key as keyof typeof formData])
-    })
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("price", formData.price);
+    formDataToSend.append("category", formData.category);
+    formDataToSend.append("phone", formData.phone);
     if (image) {
-      productData.append("image", image)
+      formDataToSend.append("image", image);
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/api/v1/campus-store/products/add", productData, {
+      const response = await axios.post("http://localhost:3000/api/v1/campus-connect/product/add", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
         withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      console.log("Product added successfully:", response.data)
-      // Reset form or show success message
+      });
+      // Handle response
     } catch (error) {
-      console.error("Error adding product:", error)
-      // Show error message
+      // Handle error
     }
-  }
+  };
 
   return (
     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-      <Typography variant="h6" gutterBottom>
-        Add New Product
-      </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
-            required
-            fullWidth
             name="name"
             label="Product Name"
+            fullWidth
             value={formData.name}
             onChange={handleInputChange}
+            required
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-            required
-            fullWidth
             name="description"
             label="Description"
-            multiline
-            rows={3}
+            fullWidth
             value={formData.description}
             onChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
             required
-            fullWidth
-            name="price"
-            label="Price"
-            type="number"
-            value={formData.price}
-            onChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            fullWidth
-            name="category"
-            label="Category"
-            value={formData.category}
-            onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-            required
+            name="price"
+            label="Price"
             fullWidth
+            value={formData.price}
+            onChange={handleInputChange}
+            required
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            name="category"
+            label="Category"
+            fullWidth
+            value={formData.category}
+            onChange={handleInputChange}
+            required
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
             name="phone"
-            label="Phone Number"
+            label="Phone"
+            fullWidth
             value={formData.phone}
             onChange={handleInputChange}
+            required
           />
         </Grid>
         <Grid item xs={12}>
           <input
             accept="image/*"
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
             id="raised-button-file"
             type="file"
             onChange={handleImageChange}
@@ -125,8 +121,7 @@ const AddProduct = () => {
         Add Product
       </Button>
     </Box>
-  )
-}
+  );
+};
 
-export default AddProduct
-
+export default AddProduct;
