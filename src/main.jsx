@@ -10,7 +10,7 @@ import Footer from "./components/Footer.jsx";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <UserProvider>
-      <Navbar />
+      {/* <Navbar /> */}
       <App />
       <Footer></Footer>
     </UserProvider>

@@ -19,15 +19,17 @@ const UserProvider = ({ children }) => {
         );
         if (response.data.user) {
           setIsAuthorized(true);
+          console.log("User Response at user context :: ",response);
           setUserData(response.data);
+          setIsAdmin(false);
         } else {
           try {
             const adminResponse = await axios.get(
               "http://localhost:3000/api/v1/campus-connect/admin/profile/",
               { withCredentials: true }
             );
-            console.log("Admin Response :: ",adminResponse);
-            if (adminResponse.data.success) {
+            console.log("Admin Response at user context :: ",adminResponse);
+            if (adminResponse.data.admin) {
               setIsAdmin(true);
               setUserData(adminResponse.data);
               setIsAuthorized(true); // Set authorized if admin profile fetched
@@ -36,13 +38,13 @@ const UserProvider = ({ children }) => {
               setIsAdmin(false);
             }
           } catch (error) {
-            console.log(error);
+            console.log("Error while fetching admin profile :: ",error);
             setIsAuthorized(false);
             setIsAdmin(false);
           }
         }
       } catch (error) {
-        console.log(error);
+        console.log("Error while fetching user profile :: ",error);
         setIsAuthorized(false);
         setIsAdmin(false);
       }
@@ -53,6 +55,7 @@ const UserProvider = ({ children }) => {
 
   useEffect(() => {
     console.log("isAuthorized updated: ", isAuthorized);
+    console.log("isAdmin updated: ", isAdmin);
   }, [isAuthorized]);
 
   return (

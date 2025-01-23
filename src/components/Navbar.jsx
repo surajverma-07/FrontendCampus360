@@ -19,7 +19,7 @@ import axios from "axios"
 
 const Navbar = () => {
   const navigate = useNavigate()
-  const { userData, setUserData, isAuthorized,isAdmin, setIsAuthorized } = userState()
+  const { userData, setUserData, isAuthorized,setIsAdmin ,isAdmin, setIsAuthorized } = userState()
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
 
@@ -52,6 +52,7 @@ const Navbar = () => {
       await axios.get("http://localhost:3000/api/v1/campus-connect/user/logout", { withCredentials: true })
       setIsAuthorized(false)
       setUserData(null)
+      console.log("Logout successful");
       navigate("/login")
     } catch (error) {
       console.error("Logout failed:", error)
@@ -64,8 +65,9 @@ const Navbar = () => {
     { title: "Career", options: ["Add Career", "My Careers", "All Careers"] },
     { title: "Product", options: ["Add Product", "My Products", "All Products"] },
   ]
-  // console.log("userData", userData.data.user);
-  
+  console.log("User Data at Navbar :: ",userData);
+  console.log("Is Authorized at Navbar :: ",isAuthorized);
+  console.log("Is Admin at Navbar :: ",isAdmin);
   const renderMenu = (category) => (
     <Menu
       anchorEl={anchorEls[category.toLowerCase()]}
@@ -90,35 +92,53 @@ const Navbar = () => {
 
   const renderMobileMenu = (
     <Menu anchorEl={mobileMenuAnchorEl} open={Boolean(mobileMenuAnchorEl)} onClose={handleMobileMenuClose}>
-      {menuItems.map((item) => (
-        <MenuItem key={item.title}>
+      {menuItems.flatMap((item) => [
+        <MenuItem key={item.title} onClick={handleMobileMenuClose}>
           <Typography variant="subtitle1">{item.title}</Typography>
-          <Menu anchorEl={mobileMenuAnchorEl} open={Boolean(mobileMenuAnchorEl)} onClose={handleMobileMenuClose}>
-            {item.options.map((option) => (
-              <MenuItem
-                key={option}
-                onClick={() => {
-                  handleMobileMenuClose()
-                  navigate(`/${item.title.toLowerCase()}/${option.toLowerCase().replace(" ", "-")}`)
-                }}
-              >
-                {option}
-              </MenuItem>
-            ))}
-          </Menu>
-        </MenuItem>
-      ))}
+        </MenuItem>,
+        ...item.options.map((option) => (
+          <MenuItem
+            key={`${item.title}-${option}`}
+            onClick={() => {
+              handleMobileMenuClose()
+              navigate(`/${item.title.toLowerCase()}/${option.toLowerCase().replace(" ", "-")}`)
+            }}
+          >
+            {option}
+          </MenuItem>
+        )),
+      ])}
       {isAuthorized ? (
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       ) : (
-        <>
-          <MenuItem onClick={() => navigate("/login")}>Login</MenuItem>
-          <MenuItem onClick={() => navigate("/signup")}>Sign Up</MenuItem>
-        </>
+        [
+          <MenuItem
+            key="login"
+            onClick={() => {
+              handleMobileMenuClose()
+              navigate("/login")
+            }}
+          >
+            Login
+          </MenuItem>,
+          <MenuItem
+            key="signup"
+            onClick={() => {
+              handleMobileMenuClose()
+              navigate("/signup")
+            }}
+          >
+            Sign Up
+          </MenuItem>,
+        ]
       )}
     </Menu>
   )
-  const route = isAdmin ? "/adminpanel" : "/profile";
+  if(userData?.data?.loggedInAdmin) {
+    setIsAdmin(true);
+  }
+  const route = `${isAdmin ? "/adminpanel" : "/profile"}`;
+
   return (
     <AppBar position="static">
       <Toolbar>
